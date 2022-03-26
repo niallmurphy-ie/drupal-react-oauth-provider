@@ -17,7 +17,7 @@ interface DrupalResponse {
 	headers?: Headers;
 }
 
-export const useApiRequest = ({ id, options, requestMethod = RequestMethod.Get, endpoint = '' }: Params) => {
+export const useAPI = ({ id, options, requestMethod = RequestMethod.Get, endpoint = '' }: Params) => {
 	const { url, token, authorized } = React.useContext(DrupalContext);
 
 	console.log('url, token, authorized', url, token, authorized);
@@ -45,9 +45,9 @@ export const useApiRequest = ({ id, options, requestMethod = RequestMethod.Get, 
 					headers,
 				};
 
-				if (!options) {
-					return;
-				}
+				// if (!options) {
+				// 	return;
+				// }
 
 				// switch (requestMethod) {
 				// 	case RequestMethod.Get: {
@@ -113,5 +113,6 @@ export const useApiRequest = ({ id, options, requestMethod = RequestMethod.Get, 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [headers, endpoint, requestMethod, url]);
 
+	console.log('data', data)
 	return { ...response, loading, error, data };
 };

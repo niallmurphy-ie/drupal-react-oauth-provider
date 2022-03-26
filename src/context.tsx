@@ -6,12 +6,6 @@ interface ProviderConfig {
 	authorized: boolean;
 }
 
-// type ProviderType = {
-// 	readonly url?: string;
-// 	token?: string;
-// 	authorized?: boolean;
-// };
-
 export const DrupalContext = React.createContext<ProviderConfig>({
 	url: '',
 	token: undefined,

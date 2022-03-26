@@ -4,11 +4,12 @@
   "description": "React hooks for Drupal's REST API",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "dependencies": {
-    "react": "^17.0.2",
-    "typescript": "^4.6.3"
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "^17.0.2"
   },
   "devDependencies": {
+    "typescript": "^4.6.3",
     "@types/jest": "^27.4.1",
     "@types/react": "^17.0.43",
     "jest": "^27.5.1",
