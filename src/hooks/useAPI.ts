@@ -20,8 +20,6 @@ interface DrupalResponse {
 export const useAPI = ({ id, options, requestMethod = RequestMethod.Get, endpoint = '' }: Params) => {
 	const { url, token, authorized } = React.useContext(DrupalContext);
 
-	console.log('url, token, authorized', url, token, authorized);
-
 	const [loading, setLoading] = React.useState(false);
 	const [error, setError] = React.useState<string | object | undefined>(undefined);
 	const [data, setData] = React.useState<object[]>([]);
@@ -110,9 +108,7 @@ export const useAPI = ({ id, options, requestMethod = RequestMethod.Get, endpoin
 		}
 
 		loadData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [headers, endpoint, requestMethod, url]);
+	}, [endpoint]);
 
-	console.log('data', data)
 	return { ...response, loading, error, data };
 };
