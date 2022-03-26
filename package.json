@@ -2,16 +2,42 @@
   "name": "react-drupal-hooks",
   "version": "0.1.0",
   "description": "React hooks for Drupal's REST API",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "dependencies": {
     "react": "^17.0.2",
     "typescript": "^4.6.3"
   },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+  "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "jest": "^27.5.1",
+    "prettier": "^2.6.1",
+    "ts-jest": "^27.1.4",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0"
   },
-  "author": "",
+  "scripts": {
+    "test": "jest --config jestconfig.json",
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/niallmurphy-ie/react-drupal-hooks.git"
+  },
+  "bugs": {
+    "url": "https://github.com/niallmurphy-ie/react-drupal-hooks/issues"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "keywords": [
+    "React",
+    "Drupal",
+    "Hooks",
+    "Login"
+  ],
+  "author": "Niall Murphy",
   "license": "ISC"
 }
