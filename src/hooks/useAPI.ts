@@ -1,12 +1,13 @@
 import React from 'react';
 import { DrupalContext } from '../context';
 import { RequestMethod } from '../enums/RequestMethod';
-
+import { Credentials } from '../context';
 // import { serializeOptions, passToBody } from '../utils';
 
 interface Params {
-	readonly requestMethod?: string;
+	readonly method?: string;
 	readonly endpoint?: string;
+	readonly options: object;
 }
 
 interface DrupalResponse {
@@ -15,46 +16,41 @@ interface DrupalResponse {
 	headers?: Headers;
 }
 
-export const useAPI = ({ requestMethod = RequestMethod.Get, endpoint = '' }: Params) => {
-	const { url, token, authorized, headers } = React.useContext(DrupalContext);
+export const useAPI = ({ options = {}, method = RequestMethod.Get, endpoint = '' }: Params) => {
+	const { url, authorized, headers, setCSRF, setCredentials } = React.useContext(DrupalContext);
 
 	const [loading, setLoading] = React.useState(false);
-	const [error, setError] = React.useState<string | object | undefined>(undefined);
+	const [error, setError] = React.useState<object | undefined>(undefined);
 	const [data, setData] = React.useState<object[]>([]);
-
-	const [response, setResponse] = React.useState<DrupalResponse | undefined>({
-		status: undefined,
-		statusText: undefined,
-		headers: undefined,
-	});
 
 	React.useEffect(() => {
 		async function loadData() {
 			try {
 				setLoading(true);
 
-				const query = `${url}${endpoint}`;
+				const query = endpoint.includes('?')
+					? `${url}${endpoint}&_format=json`
+					: `${url}${endpoint}?_format=json`;
 				const settings = {
-					method: requestMethod,
-					headers,
+					method: method,
+					headers: headers,
+					...(options && RequestMethod.Post === method ? { body: JSON.stringify(options) } : {}),
 				};
 
 				const res = await fetch(query, settings);
-
 				const parsedResponse = await res.json();
 
 				setLoading(false);
-
-				setResponse({
-					status: res.status,
-					statusText: res.statusText,
-					headers: res.headers,
-				});
-
-				if (parsedResponse.code) {
+				// Check for errors from Drupal
+				if (!res.ok) {
 					setError(parsedResponse);
 				} else {
 					setData(parsedResponse);
+				}
+				// If login
+				if (parsedResponse.csrf_token) {
+					setCSRF?.(parsedResponse.csrf_token);
+					setCredentials?.({ ...(options as Credentials) }); // We know name and pass exist here.
 				}
 			} catch (err) {
 				setLoading(false);
@@ -65,5 +61,5 @@ export const useAPI = ({ requestMethod = RequestMethod.Get, endpoint = '' }: Par
 		loadData();
 	}, [endpoint]);
 
-	return { ...response, loading, error, data };
+	return { loading, error, data };
 };

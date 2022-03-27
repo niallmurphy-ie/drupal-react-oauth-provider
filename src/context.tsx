@@ -2,16 +2,21 @@ import React from 'react';
 
 interface ProviderConfig {
 	readonly url: string;
-	token?: string;
 	authorized: boolean;
 	headers?: Headers;
-	setToken?: (token: string) => void;
-	removeToken?: () => void;
+	setCSRF?: (csrfToken: string) => void;
+	setCredentials?: (credentials: Credentials) => void;
+	setLogoutToken?: (logoutToken: string) => void;
+	clearHeaders?: () => void;
+}
+
+export interface Credentials {
+	name: string;
+	pass: string;
 }
 
 export const DrupalContext = React.createContext<ProviderConfig>({
 	url: '',
-	token: undefined,
 	authorized: false,
 });
 
@@ -21,26 +26,40 @@ interface ProviderProps {
 }
 
 export const DrupalProvider = ({ children, config }: ProviderProps) => {
-	const [headers, setHeaders] = React.useState<Headers>(new Headers());
-	const setToken = (token: string) => {
+	const [logoutToken, setLogoutToken] = React.useState<string>('');
+	const [headers, setHeaders] = React.useState<Headers>(
+		new Headers({
+			'Content-Type': 'application/json',
+		}),
+	);
+	const setCSRF = (token: string): void => {
 		setHeaders(
 			new Headers({
 				...headers,
-				Authorization: `Bearer ${token}`,
+				'X-CSRF-Token': token,
 			}),
 		);
 	};
-	const removeToken = () => {
+	const setCredentials = ({ name, pass }: Credentials): void => {
+		setHeaders(
+			new Headers({
+				...headers,
+				Authorization: `Basic ${btoa(`${name}:${pass}`)}`,
+			}),
+		);
+	};
+	const clearHeaders = (): void => {
 		setHeaders(
 			new Headers({
 				...headers,
 				Authorization: '',
+				'X-CSRF-Token': '',
 			}),
 		);
 	};
 
 	return (
-		<DrupalContext.Provider value={{ ...config, headers, setToken, removeToken }}>
+		<DrupalContext.Provider value={{ ...config, headers, setCSRF, setCredentials, setLogoutToken, clearHeaders }}>
 			{children}
 		</DrupalContext.Provider>
 	);
