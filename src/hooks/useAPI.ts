@@ -4,14 +4,13 @@ import { RequestMethod } from '../enums/RequestMethod';
 import { refreshToken } from '../oauth';
 
 interface Params {
-	readonly method?: string;
-	readonly endpoint?: string;
-	readonly options?: object;
-	readonly execute?: boolean;
-	readonly credentials?: string;
+	readonly method: string;
+	readonly endpoint: string;
+	readonly options: object;
+	readonly _execute: boolean;
 }
 
-export const useAPI = ({ options = {}, method = RequestMethod.Get, endpoint = '', execute = true }: Params) => {
+export const useAPI = ({ options = {}, method = RequestMethod.Get, endpoint = '', _execute = true }: Params) => {
 	const {
 		headers,
 		addHeaders,
@@ -21,7 +20,7 @@ export const useAPI = ({ options = {}, method = RequestMethod.Get, endpoint = ''
 		grant_type,
 		token,
 		scope,
-		setToken,
+		handleSetToken,
 		isAuthenticated,
 		setIsAuthenticated,
 	} = React.useContext(DrupalContext);
@@ -33,23 +32,24 @@ export const useAPI = ({ options = {}, method = RequestMethod.Get, endpoint = ''
 	React.useEffect(() => {
 		async function loadData() {
 			try {
-				if (execute) {
+				if (_execute) {
 					setLoading(true);
 
 					// Check access token expiry time and renew it before making request.
-					if (isAuthenticated && token !== null && token.expirationDate > Math.floor(Date.now() / 1000)) {
-						await refreshToken({
+					if (token !== null && token.expirationDate < Math.floor(Date.now() / 1000)) {
+						const refreshed = await refreshToken({
 							url: url,
 							client_id,
 							client_secret,
 							scope,
 							token,
-							setToken,
+							handleSetToken,
 							isAuthenticated,
 							setIsAuthenticated,
 							addHeaders,
 							headers,
 						});
+						console.log('refreshed', refreshed);
 					}
 
 					const query = endpoint.includes('_format=json')
@@ -78,7 +78,7 @@ export const useAPI = ({ options = {}, method = RequestMethod.Get, endpoint = ''
 			}
 		}
 		loadData();
-	}, [execute, endpoint]);
+	}, [_execute, endpoint]);
 
 	return { loading, error, data };
 };

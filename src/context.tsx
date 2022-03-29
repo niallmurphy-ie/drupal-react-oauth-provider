@@ -15,12 +15,11 @@ interface ProviderConfig {
 	grant_type: string;
 	scope: string;
 	token: Token | null;
-	setToken: React.Dispatch<React.SetStateAction<Token | null>>;
+	handleSetToken: (token: Token) => void;
 	isAuthenticated: boolean;
 	setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
 	headers: Headers;
 	addHeaders: (key: string, value: string) => void;
-	removeHeaders: (key: string) => void;
 }
 
 export interface Credentials {
@@ -37,10 +36,9 @@ export const DrupalContext = React.createContext<ProviderConfig>({
 	token: null,
 	isAuthenticated: false,
 	headers: new Headers(),
-	setToken: () => {},
+	handleSetToken: () => {},
 	setIsAuthenticated: () => {},
 	addHeaders: () => {},
-	removeHeaders: () => {},
 });
 
 interface ProviderProps {
@@ -57,6 +55,7 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 
 	const addHeaders = (key: string, value: string) => {
 		const newHeaders = headers;
+		newHeaders.delete(key);
 		newHeaders.append(key, value);
 		setHeaders(newHeaders);
 	};
@@ -65,22 +64,26 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 		newHeaders.delete(key);
 		setHeaders(newHeaders);
 	};
-
+	const handleSetToken = (newToken: Token) => {
+		setToken(newToken);
+		localStorage.removeItem('token');
+		localStorage.setItem('token', JSON.stringify(newToken));
+	};
 	React.useEffect(() => {
 		console.log('token :>> ', token);
 		if (!token || isAuthenticated) return;
-		if (token !== null && token.expirationDate > Math.floor(Date.now() / 1000) && !isAuthenticated) {
+		if (token.expirationDate > Math.floor(Date.now() / 1000)) {
 			setIsAuthenticated(true);
 			addHeaders('Authorization', `${token.token_type} ${token.access_token}`);
 		}
-		if (token !== null && token.expirationDate < Math.floor(Date.now() / 1000) && !isAuthenticated) {
+		if (token.expirationDate < Math.floor(Date.now() / 1000)) {
 			refreshToken({
 				url: config.url,
 				client_id: config.client_id,
 				client_secret: config.client_secret,
 				scope: config.scope,
 				token,
-				setToken,
+				handleSetToken,
 				isAuthenticated,
 				setIsAuthenticated,
 				addHeaders,
@@ -95,9 +98,8 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 				...config, // includes client_id and client_secret
 				headers,
 				addHeaders,
-				removeHeaders,
 				token,
-				setToken,
+				handleSetToken,
 				isAuthenticated,
 				setIsAuthenticated,
 			}}

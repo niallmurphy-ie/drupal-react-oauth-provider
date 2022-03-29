@@ -14,7 +14,7 @@ export const useLazyLogin = () => {
 		client_secret,
 		grant_type,
 		scope,
-		setToken,
+		handleSetToken,
 		isAuthenticated,
 		setIsAuthenticated,
 	} = React.useContext(DrupalContext);
@@ -26,7 +26,7 @@ export const useLazyLogin = () => {
 
 	const [loading, setLoading] = React.useState<boolean>(false);
 	const [error, setError] = React.useState<object | null>(null);
-	const [data, setData] = React.useState<any>(null);
+	const [data, setData] = React.useState<object | null>(null);
 
 	React.useEffect(() => {
 		async function loadData() {
@@ -56,12 +56,13 @@ export const useLazyLogin = () => {
 						const newToken = Object.assign({}, parsedResponse);
 						newToken.date = Math.floor(Date.now() / 1000);
 						newToken.expirationDate = newToken.date + newToken.expires_in;
-						setToken(newToken);
+						setIsAuthenticated(true);
 						localStorage.clear();
 						localStorage.setItem('token', JSON.stringify(newToken));
-						setIsAuthenticated(true);
+						handleSetToken(newToken);
 						setData(parsedResponse);
 					} else {
+						localStorage.clear();
 						setError(parsedResponse);
 					}
 					setLoading(false);

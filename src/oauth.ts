@@ -6,7 +6,7 @@ interface RefreshToken {
 	client_secret: string;
 	scope: string;
 	token: Token;
-	setToken: (token: Token) => void;
+	handleSetToken: (token: Token) => void;
 	isAuthenticated: boolean;
 	setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
 	headers: Headers;
@@ -19,13 +19,13 @@ export const refreshToken = async ({
 	client_secret,
 	scope,
 	token,
-	setToken,
+	handleSetToken,
 	isAuthenticated,
 	setIsAuthenticated,
 	headers,
 	addHeaders,
 }: RefreshToken) => {
-	if (!setToken || !token || isAuthenticated || !token.refresh_token) return;
+	// if (!setToken || !token || isAuthenticated || !token.refresh_token) return;
 
 	const formData = new URLSearchParams();
 	formData.append('grant_type', 'refresh_token');
@@ -33,8 +33,6 @@ export const refreshToken = async ({
 	formData.append('client_secret', client_secret);
 	formData.append('scope', scope);
 	formData.append('refresh_token', token.refresh_token);
-
-	console.log('formData', formData);
 
 	const response = await fetch(`${url}oauth/token`, {
 		method: 'post',
@@ -46,16 +44,17 @@ export const refreshToken = async ({
 	const parsedResponse = await response.json();
 
 	if (response.ok && parsedResponse.access_token) {
-		console.log('THIS FAR');
+		addHeaders('Authorization', `${parsedResponse.token_type} ${parsedResponse.access_token}`);
 		const newToken = Object.assign({}, parsedResponse);
 		newToken.date = Math.floor(Date.now() / 1000);
 		newToken.expirationDate = newToken.date + newToken.expires_in;
 		setIsAuthenticated(true);
-		addHeaders('Authorization', `${parsedResponse.token_type} ${parsedResponse.access_token}`);
-		setToken(newToken);
 		localStorage.clear();
 		localStorage.setItem('token', JSON.stringify(token));
+		handleSetToken(newToken);
 	} else {
-		throw new Error('Error refreshing token');
+		localStorage.clear();
+		console.log('response, parsedResponse', response, parsedResponse);
 	}
+	return parsedResponse;
 };
