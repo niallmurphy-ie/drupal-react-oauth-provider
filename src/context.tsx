@@ -15,9 +15,9 @@ interface ProviderConfig {
 	grant_type: string;
 	scope: string;
 	token: Token | null;
-	setToken: (token: Token | null) => void;
+	setToken: React.Dispatch<React.SetStateAction<Token | null>>;
 	isAuthenticated: boolean;
-	setIsAuthenticated: (isAuthenticated: boolean) => void;
+	setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
 	headers: Headers;
 	addHeaders: (key: string, value: string) => void;
 	removeHeaders: (key: string) => void;

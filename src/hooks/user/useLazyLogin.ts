@@ -1,6 +1,6 @@
 import React from 'react';
 import { DrupalContext } from '../../context';
-
+import { RequestMethod } from '../../enums/RequestMethod';
 interface Login {
 	username: string;
 	password: string;
@@ -43,7 +43,7 @@ export const useLazyLogin = () => {
 					formData.append('password', password);
 
 					const response = await fetch(`${url}oauth/token`, {
-						method: 'post',
+						method: RequestMethod.Post,
 						headers,
 						body: formData,
 					});
@@ -57,6 +57,7 @@ export const useLazyLogin = () => {
 						newToken.date = Math.floor(Date.now() / 1000);
 						newToken.expirationDate = newToken.date + newToken.expires_in;
 						setToken(newToken);
+						localStorage.clear();
 						localStorage.setItem('token', JSON.stringify(newToken));
 						setIsAuthenticated(true);
 						setData(parsedResponse);
