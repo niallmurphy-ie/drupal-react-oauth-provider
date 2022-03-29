@@ -6,8 +6,18 @@ interface Login {
 	password: string;
 }
 export const useLazyLogin = () => {
-	const { url, client_id, client_secret, grant_type, scope, setToken, isAuthenticated, setIsAuthenticated } =
-		React.useContext(DrupalContext);
+	const {
+		headers,
+		addHeaders,
+		url,
+		client_id,
+		client_secret,
+		grant_type,
+		scope,
+		setToken,
+		isAuthenticated,
+		setIsAuthenticated,
+	} = React.useContext(DrupalContext);
 
 	// Lazy functionality
 	const [execute, setExecute] = React.useState<boolean>(false);
@@ -25,7 +35,7 @@ export const useLazyLogin = () => {
 				if (execute && username && password && !isAuthenticated) {
 					setLoading(true);
 
-					let formData = new FormData();
+					let formData = new URLSearchParams();
 					formData.append('grant_type', grant_type);
 					formData.append('client_id', client_id);
 					formData.append('client_secret', client_secret);
@@ -35,9 +45,7 @@ export const useLazyLogin = () => {
 
 					const response = await fetch(`${url}oauth/token`, {
 						method: 'post',
-						headers: new Headers({
-							Accept: 'application/json',
-						}),
+						headers,
 						body: formData,
 					});
 
@@ -45,6 +53,7 @@ export const useLazyLogin = () => {
 					console.log('response, parsedResponse', response, parsedResponse);
 
 					if (response.ok && parsedResponse.access_token) {
+						addHeaders('Authorization', `${parsedResponse.token_type} ${parsedResponse.access_token}`);
 						const token = Object.assign({}, parsedResponse);
 						token.date = Math.floor(Date.now() / 1000);
 						token.expirationDate = token.date + token.expires_in;

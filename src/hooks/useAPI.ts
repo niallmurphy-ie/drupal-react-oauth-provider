@@ -1,3 +1,59 @@
+import React from 'react';
+import { DrupalContext } from '../context';
+import { RequestMethod } from '../enums/RequestMethod';
+
+interface Params {
+	readonly method?: string;
+	readonly endpoint?: string;
+	readonly options?: object;
+	readonly execute?: boolean;
+	readonly credentials?: string;
+}
+
+export const useAPI = ({ options = {}, method = RequestMethod.Get, endpoint = '', execute = true }: Params) => {
+	const { headers, url } = React.useContext(DrupalContext);
+
+	const [loading, setLoading] = React.useState<boolean>(false);
+	const [error, setError] = React.useState<object | null>(null);
+	const [data, setData] = React.useState<any>(null);
+
+	React.useEffect(() => {
+		async function loadData() {
+			try {
+				if (execute) {
+					setLoading(true);
+
+					const query = endpoint.includes('?')
+						? `${url}${endpoint}&_format=json`
+						: `${url}${endpoint}?_format=json`;
+					const settings = {
+						method,
+						headers,
+						// withCredentials: true,
+						// credentials: 'same-origin' as RequestCredentials,
+						...(options && RequestMethod.Post === method ? { body: JSON.stringify(options) } : {}),
+					};
+
+					const res = await fetch(query, settings);
+					const parsedResponse = await res.json();
+
+					console.log('res, parsedResponse', res, parsedResponse);
+
+					setLoading(false);
+					// Check for errors from Drupal
+					res.ok ? setData(parsedResponse) : setError(parsedResponse);
+				}
+			} catch (error) {
+				setLoading(false);
+				setError(error as object);
+			}
+		}
+		loadData();
+	}, [execute, endpoint]);
+
+	return { loading, error, data };
+};
+
 // import React from 'react';
 // import { DrupalContext } from '../context';
 // import { RequestMethod } from '../enums/RequestMethod';

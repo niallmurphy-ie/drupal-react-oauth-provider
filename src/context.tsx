@@ -19,7 +19,8 @@ interface ProviderConfig {
 	isAuthenticated: boolean;
 	setIsAuthenticated: (isAuthenticated: boolean) => void;
 	headers: Headers;
-	setHeaders: (headers: Headers) => void;
+	addHeaders: (key: string, value: string) => void;
+	removeHeaders: (key: string) => void;
 }
 
 export interface Credentials {
@@ -34,11 +35,12 @@ export const DrupalContext = React.createContext<ProviderConfig>({
 	grant_type: '',
 	scope: '',
 	token: null,
-	setToken: () => {},
-	headers: new Headers(),
-	setHeaders: () => {},
 	isAuthenticated: false,
+	headers: new Headers(),
+	setToken: () => {},
 	setIsAuthenticated: () => {},
+	addHeaders: () => {},
+	removeHeaders: () => {},
 });
 
 interface ProviderProps {
@@ -47,11 +49,24 @@ interface ProviderProps {
 }
 
 export const DrupalProvider = ({ children, config }: ProviderProps) => {
-	const [headers, setHeaders] = React.useState<Headers>(new Headers({ 'Content-Type': 'application/json' }));
+	const [headers, setHeaders] = React.useState<Headers>(
+		new Headers({ Accept: 'application/json' }),
+	);
 	const [token, setToken] = React.useState<Token | null>(
 		localStorage.getItem('token') !== null ? JSON.parse(localStorage.getItem('token') as string) : null,
 	);
 	const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
+
+	const addHeaders = (key: string, value: string) => {
+		const newHeaders = headers;
+		newHeaders.append(key, value);
+		setHeaders(newHeaders);
+	};
+	const removeHeaders = (key: string) => {
+		const newHeaders = headers;
+		newHeaders.delete(key);
+		setHeaders(newHeaders);
+	};
 
 	React.useEffect(() => {
 		if (!token || isAuthenticated) return;
@@ -67,6 +82,7 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 				setToken,
 				isAuthenticated,
 				setIsAuthenticated,
+				addHeaders,
 			});
 		}
 	}, [token]);
@@ -76,7 +92,8 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 			value={{
 				...config, // includes client_id and client_secret
 				headers,
-				setHeaders,
+				addHeaders,
+				removeHeaders,
 				token,
 				setToken,
 				isAuthenticated,
