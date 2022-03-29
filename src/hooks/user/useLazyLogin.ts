@@ -8,6 +8,7 @@ interface Login {
 export const useLazyLogin = () => {
 	const { url, client_id, client_secret, grant_type, scope, setToken, isAuthenticated, setIsAuthenticated } =
 		React.useContext(DrupalContext);
+
 	// Lazy functionality
 	const [execute, setExecute] = React.useState<boolean>(false);
 	const [username, setUsername] = React.useState<string | null>(null);
@@ -20,9 +21,7 @@ export const useLazyLogin = () => {
 	React.useEffect(() => {
 		async function loadData() {
 			try {
-				if (isAuthenticated) {
-					return setError({ message: 'Already logged in.' });
-				}
+				if (!client_id) return;
 				if (execute && username && password && !isAuthenticated) {
 					setLoading(true);
 

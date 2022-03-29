@@ -1,131 +1,55 @@
-interface GetOauthToken {
-	readonly url: string;
-	readonly client_id: string;
-	readonly client_secret: string;
-	readonly grant_type: string;
-	readonly username: string;
-	readonly password: string;
-	readonly scope: string;
+import { Token } from './context';
+
+interface RefreshToken {
+	url: string;
+	client_id: string;
+	client_secret: string;
+	grant_type: string;
+	scope: string;
+	token: Token;
+	setToken: (token: Token) => void;
+	isAuthenticated: boolean;
+	setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const getOauthToken = async ({
+export const refreshToken = async ({
 	url,
 	client_id,
 	client_secret,
 	grant_type,
-	username,
-	password,
 	scope,
-}: GetOauthToken) => {
-	console.log('getting oauth token');
-	const token = await fetchOauthToken({
-		url: `${url}oauth/token`,
-		client_id,
-		client_secret,
-		grant_type,
-		username,
-		password,
-		scope,
-	});
-	return token as object;
-};
+	token,
+	setToken,
+	isAuthenticated,
+	setIsAuthenticated,
+}: RefreshToken) => {
+	if (!setToken || !token || isAuthenticated) return;
 
-// getRefreshToken() {
-// 	console.log('getting refresh token');
-// 	this.refreshOauthToken('token', `${DRUPAL_API_ROOT}oauth/token`);
-// }
-
-interface FetchOauthToken {
-	readonly url: string;
-	readonly client_id: string;
-	readonly client_secret: string;
-	readonly grant_type: string;
-	readonly username: string;
-	readonly password: string;
-	readonly scope: string;
-}
-
-type Token = {
-	date?: Date;
-};
-
-const fetchOauthToken = async ({
-	url,
-	client_id,
-	client_secret,
-	grant_type,
-	username,
-	password,
-	scope,
-}: FetchOauthToken) => {
-	console.log('getting oauth token');
 	let formData = new FormData();
-	formData.append('grant_type', grant_type);
+	formData.append('grant_type', 'refresh_token');
 	formData.append('client_id', client_id);
 	formData.append('client_secret', client_secret);
 	formData.append('scope', scope);
-	formData.append('username', username);
-	formData.append('password', password);
+	formData.append('refresh_token', token.refresh_token);
 
-	try {
-		const response = await fetch(url, {
-			method: 'post',
-			headers: new Headers({
-				Accept: 'application/json',
-			}),
-			body: formData,
-		});
+	const response = await fetch(`${url}oauth/token`, {
+		method: 'post',
+		headers: new Headers({
+			Accept: 'application/json',
+		}),
+		body: formData,
+	});
+	const parsedResponse = await response.json();
 
-		const data = await response.json;
-		console.log('data', data);
-		// return data;
-
-		// const accessToken = da.
-		// // Convert the date to a UNIX timestamp.
-		// token.date = Math.floor(Date.now() / 1000);
-		// token.expirationDate = token.date + token.expires_in;
-		// this.setState({ token: token });
-		// this.setState({ appUserLoggedIn: true });
-		// localStorage.setItem('token', JSON.stringify(token));
-		// After getting a new token we should also refresh the node data since
-		// different users might have access to different content.
-		// this.loadNodeData();
-
-		return data;
-	} catch (error) {
-		return error;
+	if (response.ok && parsedResponse.access_token) {
+		const token = Object.assign({}, parsedResponse);
+		token.date = Math.floor(Date.now() / 1000);
+		token.expirationDate = token.date + token.expires_in;
+		setToken(token);
+		localStorage.clear();
+		localStorage.setItem('token', JSON.stringify(token));
+		setIsAuthenticated(true);
+	} else {
+		throw new Error('Error refreshing token');
 	}
 };
-
-// refreshOauthToken(destination, url) {
-// 	console.log('getting refresh token');
-// 	if (this.state.token !== null) {
-// 		let formData = new FormData();
-// 		formData.append('grant_type', 'refresh_token');
-// 		formData.append('client_id', config.oauth.client_id);
-// 		formData.append('client_secret', config.oauth.client_secret);
-// 		formData.append('scope', config.oauth.scope);
-// 		formData.append('refresh_token', this.state.token.refresh_token);
-
-// 		fetch(url, {
-// 			method: 'post',
-// 			headers: new Headers({
-// 				Accept: 'application/json',
-// 			}),
-// 			body: formData,
-// 		})
-// 			.then(function (response) {
-// 				return response.json();
-// 			})
-// 			.then((data) => {
-// 				console.log('refresh token', data);
-// 				let token = Object.assign({}, data);
-// 				// Convert the date to a UNIX timestamp.
-// 				token.date = Math.floor(Date.now() / 1000);
-// 				token.expirationDate = token.date + token.expires_in;
-// 				this.setState({ token: token });
-// 				localStorage.setItem('token', JSON.stringify(token));
-// 			})
-// 			.catch((err) => console.log('API got an error', err));
-// 	}
-// }
