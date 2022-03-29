@@ -31,11 +31,10 @@ export const useLazyLogin = () => {
 	React.useEffect(() => {
 		async function loadData() {
 			try {
-				if (!client_id) return;
 				if (execute && username && password && !isAuthenticated) {
 					setLoading(true);
 
-					let formData = new URLSearchParams();
+					const formData = new URLSearchParams();
 					formData.append('grant_type', grant_type);
 					formData.append('client_id', client_id);
 					formData.append('client_secret', client_secret);
@@ -54,11 +53,11 @@ export const useLazyLogin = () => {
 
 					if (response.ok && parsedResponse.access_token) {
 						addHeaders('Authorization', `${parsedResponse.token_type} ${parsedResponse.access_token}`);
-						const token = Object.assign({}, parsedResponse);
-						token.date = Math.floor(Date.now() / 1000);
-						token.expirationDate = token.date + token.expires_in;
-						setToken(token);
-						localStorage.setItem('token', JSON.stringify(token));
+						const newToken = Object.assign({}, parsedResponse);
+						newToken.date = Math.floor(Date.now() / 1000);
+						newToken.expirationDate = newToken.date + newToken.expires_in;
+						setToken(newToken);
+						localStorage.setItem('token', JSON.stringify(newToken));
 						setIsAuthenticated(true);
 						setData(parsedResponse);
 					} else {

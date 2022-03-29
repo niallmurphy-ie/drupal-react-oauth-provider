@@ -49,9 +49,7 @@ interface ProviderProps {
 }
 
 export const DrupalProvider = ({ children, config }: ProviderProps) => {
-	const [headers, setHeaders] = React.useState<Headers>(
-		new Headers({ Accept: 'application/json' }),
-	);
+	const [headers, setHeaders] = React.useState<Headers>(new Headers({ Accept: 'application/json' }));
 	const [token, setToken] = React.useState<Token | null>(
 		localStorage.getItem('token') !== null ? JSON.parse(localStorage.getItem('token') as string) : null,
 	);
@@ -69,20 +67,24 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 	};
 
 	React.useEffect(() => {
+		console.log('token :>> ', token);
 		if (!token || isAuthenticated) return;
-		if (token !== null && token.expirationDate > Math.floor(Date.now() / 1000)) setIsAuthenticated(true);
-		if (token !== null && token.expirationDate < Math.floor(Date.now() / 1000)) {
+		if (token !== null && token.expirationDate > Math.floor(Date.now() / 1000) && !isAuthenticated) {
+			setIsAuthenticated(true);
+			addHeaders('Authorization', `${token.token_type} ${token.access_token}`);
+		}
+		if (token !== null && token.expirationDate < Math.floor(Date.now() / 1000) && !isAuthenticated) {
 			refreshToken({
 				url: config.url,
 				client_id: config.client_id,
 				client_secret: config.client_secret,
-				grant_type: config.grant_type,
 				scope: config.scope,
 				token,
 				setToken,
 				isAuthenticated,
 				setIsAuthenticated,
 				addHeaders,
+				headers,
 			});
 		}
 	}, [token]);
