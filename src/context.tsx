@@ -6,8 +6,12 @@ interface ProviderConfig {
 	headers?: Headers;
 	setCSRF?: (csrfToken: string) => void;
 	setCredentials?: (credentials: Credentials) => void;
+	removeCredentials: () => void;
 	setLogoutToken?: (logoutToken: string) => void;
-	clearHeaders?: () => void;
+	logoutHeaders?: () => void;
+	logoutToken: string;
+	csrfToken: string;
+	setCSRFToken: (csrfToken: string) => void;
 }
 
 export interface Credentials {
@@ -18,6 +22,10 @@ export interface Credentials {
 export const DrupalContext = React.createContext<ProviderConfig>({
 	url: '',
 	authorized: false,
+	removeCredentials: () => {},
+	logoutToken: '',
+	csrfToken: '',
+	setCSRFToken: () => {},
 });
 
 interface ProviderProps {
@@ -26,29 +34,30 @@ interface ProviderProps {
 }
 
 export const DrupalProvider = ({ children, config }: ProviderProps) => {
+	const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
 	const [logoutToken, setLogoutToken] = React.useState<string>('');
+	const [csrfToken, setCSRFToken] = React.useState<string>('');
 	const [headers, setHeaders] = React.useState<Headers>(
-		new Headers({
-			'Content-Type': 'application/json',
-		}),
+		new Headers({ 'Content-Type': 'application/json', withCredentials: 'true' }),
 	);
-	const setCSRF = (token: string): void => {
-		setHeaders(
-			new Headers({
-				...headers,
-				'X-CSRF-Token': token,
-			}),
-		);
+	// Append headers
+	const setCSRF = (csrfToken: string) => {
+		const newHeaders = headers;
+		newHeaders.append('X-CSRF-Token', csrfToken);
+		newHeaders.append('_csrf_token', csrfToken);
+		setHeaders(newHeaders);
 	};
 	const setCredentials = ({ name, pass }: Credentials): void => {
-		setHeaders(
-			new Headers({
-				...headers,
-				Authorization: `Basic ${btoa(`${name}:${pass}`)}`,
-			}),
-		);
+		const newHeaders = headers;
+		newHeaders.append('Authorization', `Basic ${btoa(`${name}:${pass}`)}`);
+		setHeaders(newHeaders);
 	};
-	const clearHeaders = (): void => {
+	const removeCredentials = () => {
+		const newHeaders = headers;
+		newHeaders.delete('authorization');
+		setHeaders(newHeaders);
+	};
+	const logoutHeaders = (): void => {
 		setHeaders(
 			new Headers({
 				...headers,
@@ -56,10 +65,24 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 				'X-CSRF-Token': '',
 			}),
 		);
+		setIsAuthenticated(false);
 	};
 
 	return (
-		<DrupalContext.Provider value={{ ...config, headers, setCSRF, setCredentials, setLogoutToken, clearHeaders }}>
+		<DrupalContext.Provider
+			value={{
+				...config,
+				headers,
+				setCSRF,
+				setCredentials,
+				removeCredentials,
+				setLogoutToken,
+				logoutHeaders,
+				logoutToken,
+				csrfToken,
+				setCSRFToken,
+			}}
+		>
 			{children}
 		</DrupalContext.Provider>
 	);
