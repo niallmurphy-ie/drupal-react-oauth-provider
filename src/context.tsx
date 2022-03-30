@@ -1,5 +1,5 @@
 import React from 'react';
-import { refreshToken } from './oauth';
+import { refreshToken } from './refreshToken';
 export interface Token {
 	access_token: string;
 	refresh_token: string;
@@ -55,7 +55,7 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 
 	const addHeaders = (key: string, value: string) => {
 		const newHeaders = headers;
-		newHeaders.delete(key);
+		newHeaders.delete(key); // toDo - Crutch? Checks should be enough?
 		newHeaders.append(key, value);
 		setHeaders(newHeaders);
 	};
@@ -70,7 +70,7 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 	// We are setting tokens from outside React because of rules of hooks. Handler needed for state to work correctly.
 	const handleSetToken = (newToken: Token) => {
 		setToken(newToken);
-		localStorage.removeItem('token');
+		localStorage.removeItem('token'); // toDo
 		localStorage.setItem('token', JSON.stringify(newToken));
 	};
 	React.useEffect(() => {

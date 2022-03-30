@@ -1,7 +1,7 @@
 import React from 'react';
 import { DrupalContext } from '../context';
 import { RequestMethod } from '../enums/RequestMethod';
-import { refreshToken } from '../oauth';
+import { refreshToken } from '../refreshToken';
 
 // Hide _execute
 export interface Params {
@@ -74,7 +74,7 @@ export const useAPI = ({ body = {}, method = RequestMethod.Get, endpoint = '', _
 					const parsedResponse = await response.json();
 
 					setLoading(false);
-					// Check for errors from Drupal
+					// Check for errors from Drupal before setting data
 					response.ok ? setData(parsedResponse) : setError(parsedResponse);
 				}
 			} catch (error) {

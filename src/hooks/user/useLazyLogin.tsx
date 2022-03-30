@@ -19,7 +19,8 @@ export const useLazyLogin = () => {
 		setIsAuthenticated,
 	} = React.useContext(DrupalContext);
 
-	// Lazy functionality
+	// Lazy functionality through execute like Apollo's useLazyQuery.
+	// Seems like providing a function is the best way for something like login.
 	const [execute, setExecute] = React.useState<boolean>(false);
 	const [username, setUsername] = React.useState<string | null>(null);
 	const [password, setPassword] = React.useState<string | null>(null);
