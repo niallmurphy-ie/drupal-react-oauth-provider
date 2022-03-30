@@ -52,6 +52,7 @@ export const useAPI = ({ options = {}, method = RequestMethod.Get, endpoint = ''
 					}
 
 					// Deal with jsonAPI / user input / query strings. Ugly but works.
+					//
 					const query =
 						endpoint.startsWith('jsonapi') || endpoint.includes('_format=json')
 							? `${url}${endpoint}`

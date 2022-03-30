@@ -77,7 +77,7 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 			addHeaders('Authorization', `${token.token_type} ${token.access_token}`);
 		}
 		if (token.expirationDate < Math.floor(Date.now() / 1000)) {
-			// Ok to call this non-async as the state will update itself.
+			// Ok to call this non async as the state will update
 			refreshToken({
 				url: config.url,
 				client_id: config.client_id,
