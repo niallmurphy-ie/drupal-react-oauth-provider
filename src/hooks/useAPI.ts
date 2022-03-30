@@ -3,12 +3,19 @@ import { DrupalContext } from '../context';
 import { RequestMethod } from '../enums/RequestMethod';
 import { refreshToken } from '../oauth';
 
+// Hide _execute
 export interface Params {
 	readonly method: string;
 	readonly endpoint: string;
 	readonly body: object;
-	readonly _execute: boolean;
+	_execute?: boolean;
 }
+
+/**
+ * Ignore _execute. It is used for lazyAPI.
+ * @example
+ * const { data, loading, error } = useAPI({ endpoint, method, body });
+ */
 
 export const useAPI = ({ body = {}, method = RequestMethod.Get, endpoint = '', _execute = true }: Params) => {
 	const {

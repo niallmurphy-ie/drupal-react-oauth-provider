@@ -3,6 +3,11 @@ import { useAPI } from './useAPI';
 import { RequestMethod } from '../enums/RequestMethod';
 import { Params } from './useAPI';
 
+/**
+ * @example
+ * const [lazyAPI, { loading, error, data }] = useLazyAPI();
+ */
+
 export const useLazyAPI = () => {
 	const [exectute, setExecute] = React.useState<boolean>(false);
 	const [body, setBody] = React.useState<object>({});
