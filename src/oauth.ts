@@ -9,7 +9,6 @@ interface RefreshToken {
 	handleSetToken: (token: Token) => void;
 	isAuthenticated: boolean;
 	setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-	headers: Headers;
 	addHeaders: (key: string, value: string) => void;
 }
 
@@ -22,7 +21,6 @@ export const refreshToken = async ({
 	handleSetToken,
 	isAuthenticated,
 	setIsAuthenticated,
-	headers,
 	addHeaders,
 }: RefreshToken) => {
 	// if (!setToken || !token || isAuthenticated || !token.refresh_token) return;

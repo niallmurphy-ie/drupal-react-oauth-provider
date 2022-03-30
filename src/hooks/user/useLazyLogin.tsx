@@ -7,7 +7,7 @@ interface Login {
 }
 export const useLazyLogin = () => {
 	const {
-		headers,
+		getHeaders,
 		addHeaders,
 		url,
 		client_id,
@@ -44,7 +44,7 @@ export const useLazyLogin = () => {
 
 					const response = await fetch(`${url}oauth/token`, {
 						method: RequestMethod.Post,
-						headers,
+						headers: getHeaders(),
 						body: formData,
 					});
 					const parsedResponse = await response.json();

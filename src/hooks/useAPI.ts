@@ -12,7 +12,7 @@ export interface Params {
 
 export const useAPI = ({ body = {}, method = RequestMethod.Get, endpoint = '', _execute = true }: Params) => {
 	const {
-		headers,
+		getHeaders,
 		addHeaders,
 		url,
 		client_id,
@@ -47,7 +47,6 @@ export const useAPI = ({ body = {}, method = RequestMethod.Get, endpoint = '', _
 							isAuthenticated,
 							setIsAuthenticated,
 							addHeaders,
-							headers,
 						});
 					}
 
@@ -61,7 +60,7 @@ export const useAPI = ({ body = {}, method = RequestMethod.Get, endpoint = '', _
 					// body not allowed on GET requests. #toDo - PATCH and DELETE ?
 					const settings = {
 						method,
-						headers,
+						headers: getHeaders(),
 						...(body && RequestMethod.Post === method ? { body: JSON.stringify(body) } : {}),
 					};
 					const response = await fetch(query, settings);

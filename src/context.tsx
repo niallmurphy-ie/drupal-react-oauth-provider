@@ -18,7 +18,7 @@ interface ProviderConfig {
 	handleSetToken: (token: Token) => void;
 	isAuthenticated: boolean;
 	setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-	headers: Headers;
+	getHeaders: () => Headers;
 	addHeaders: (key: string, value: string) => void;
 }
 
@@ -35,7 +35,7 @@ export const DrupalContext = React.createContext<ProviderConfig>({
 	scope: '',
 	token: null,
 	isAuthenticated: false,
-	headers: new Headers(),
+	getHeaders: () => new Headers(),
 	handleSetToken: () => {},
 	setIsAuthenticated: () => {},
 	addHeaders: () => {},
@@ -64,6 +64,9 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 		newHeaders.delete(key);
 		setHeaders(newHeaders);
 	};
+	const getHeaders = () => {
+		return headers;
+	};
 	// We are setting tokens from outside React because of rules of hooks. Handler needed for state to work correctly.
 	const handleSetToken = (newToken: Token) => {
 		setToken(newToken);
@@ -88,7 +91,6 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 				isAuthenticated,
 				setIsAuthenticated,
 				addHeaders,
-				headers,
 			});
 		}
 	}, [token]);
@@ -97,7 +99,7 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 		<DrupalContext.Provider
 			value={{
 				...config, // includes client_id and client_secret
-				headers,
+				getHeaders,
 				addHeaders,
 				token,
 				handleSetToken,
