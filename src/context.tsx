@@ -64,19 +64,20 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 		newHeaders.delete(key);
 		setHeaders(newHeaders);
 	};
+	// We are setting tokens from outside React because of rules of hooks. Handler needed for state to work correctly.
 	const handleSetToken = (newToken: Token) => {
 		setToken(newToken);
 		localStorage.removeItem('token');
 		localStorage.setItem('token', JSON.stringify(newToken));
 	};
 	React.useEffect(() => {
-		console.log('token :>> ', token);
 		if (!token || isAuthenticated) return;
 		if (token.expirationDate > Math.floor(Date.now() / 1000)) {
 			setIsAuthenticated(true);
 			addHeaders('Authorization', `${token.token_type} ${token.access_token}`);
 		}
 		if (token.expirationDate < Math.floor(Date.now() / 1000)) {
+			// Ok to call this non-async as the state will update itself.
 			refreshToken({
 				url: config.url,
 				client_id: config.client_id,

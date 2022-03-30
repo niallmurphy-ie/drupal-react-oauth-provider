@@ -3,7 +3,7 @@ import { DrupalContext } from '../context';
 import { RequestMethod } from '../enums/RequestMethod';
 import { refreshToken } from '../oauth';
 
-interface Params {
+export interface Params {
 	readonly method: string;
 	readonly endpoint: string;
 	readonly options: object;
@@ -17,7 +17,6 @@ export const useAPI = ({ options = {}, method = RequestMethod.Get, endpoint = ''
 		url,
 		client_id,
 		client_secret,
-		grant_type,
 		token,
 		scope,
 		handleSetToken,
@@ -37,7 +36,8 @@ export const useAPI = ({ options = {}, method = RequestMethod.Get, endpoint = ''
 
 					// Check access token expiry time and renew it before making request.
 					if (token !== null && token.expirationDate < Math.floor(Date.now() / 1000)) {
-						const refreshed = await refreshToken({
+						// Must call this async so that the token is set before making the request.
+						await refreshToken({
 							url: url,
 							client_id,
 							client_secret,
@@ -49,9 +49,9 @@ export const useAPI = ({ options = {}, method = RequestMethod.Get, endpoint = ''
 							addHeaders,
 							headers,
 						});
-						console.log('refreshed', refreshed);
 					}
 
+					// Deal with user input into useAPI / useLazyAPI
 					const query = endpoint.includes('_format=json')
 						? `${url}${endpoint}`
 						: endpoint.includes('?')
@@ -60,7 +60,7 @@ export const useAPI = ({ options = {}, method = RequestMethod.Get, endpoint = ''
 					const settings = {
 						method,
 						headers,
-						...(options && RequestMethod.Post === method ? { body: JSON.stringify(options) } : {}),
+						...(options && RequestMethod.Post === method ? { body: JSON.stringify(options) } : {}), // body not allowed on Get requests
 					};
 
 					const response = await fetch(query, settings);

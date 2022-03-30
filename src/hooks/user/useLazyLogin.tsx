@@ -57,7 +57,7 @@ export const useLazyLogin = () => {
 						newToken.date = Math.floor(Date.now() / 1000);
 						newToken.expirationDate = newToken.date + newToken.expires_in;
 						setIsAuthenticated(true);
-						localStorage.clear();
+						// localStorage.clear();
 						localStorage.setItem('token', JSON.stringify(newToken));
 						handleSetToken(newToken);
 						setData(parsedResponse);

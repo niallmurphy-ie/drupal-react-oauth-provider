@@ -49,7 +49,7 @@ export const refreshToken = async ({
 		newToken.date = Math.floor(Date.now() / 1000);
 		newToken.expirationDate = newToken.date + newToken.expires_in;
 		setIsAuthenticated(true);
-		localStorage.clear();
+		// localStorage.clear();
 		localStorage.setItem('token', JSON.stringify(token));
 		handleSetToken(newToken);
 	} else {
