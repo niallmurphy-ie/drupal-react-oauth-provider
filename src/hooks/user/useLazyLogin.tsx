@@ -47,9 +47,7 @@ export const useLazyLogin = () => {
 						headers,
 						body: formData,
 					});
-
 					const parsedResponse = await response.json();
-					console.log('response, parsedResponse', response, parsedResponse);
 
 					if (response.ok && parsedResponse.access_token) {
 						addHeaders('Authorization', `${parsedResponse.token_type} ${parsedResponse.access_token}`);
@@ -58,7 +56,6 @@ export const useLazyLogin = () => {
 						newToken.date = Math.floor(Date.now() / 1000);
 						newToken.expirationDate = newToken.date + newToken.expires_in;
 						setIsAuthenticated(true);
-						// localStorage.clear();
 						localStorage.setItem('token', JSON.stringify(newToken));
 						handleSetToken(newToken);
 						setData(parsedResponse);

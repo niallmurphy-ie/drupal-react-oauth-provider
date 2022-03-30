@@ -15,6 +15,7 @@
     "@types/react": "^17.0.43",
     "enzyme": "^3.11.0",
     "jest": "^27.5.1",
+    "react": ">=16.8.0",
     "node-fetch": "^3.2.3",
     "prettier": "^2.6.1",
     "ts-jest": "^27.1.4",

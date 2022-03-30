@@ -1,9 +1,8 @@
 import React from 'react';
 import { DrupalProvider, DrupalContext } from '../context';
-
 import { mount } from 'enzyme';
-
 import { render, screen } from '@testing-library/react';
+
 // interface ProviderProps {
 // 	readonly children: React.ReactNode;
 // 	config: ProviderConfig;
@@ -19,6 +18,7 @@ const config = {
 	handleSetToken: () => {},
 	isAuthenticated: false,
 	setIsAuthenticated: () => {},
+	headers: new Headers({ Accept: 'application/json' }),
 	addHeaders: () => {},
 };
 

@@ -6,11 +6,11 @@ import { refreshToken } from '../oauth';
 export interface Params {
 	readonly method: string;
 	readonly endpoint: string;
-	readonly options: object;
+	readonly body: object;
 	readonly _execute: boolean;
 }
 
-export const useAPI = ({ options = {}, method = RequestMethod.Get, endpoint = '', _execute = true }: Params) => {
+export const useAPI = ({ body = {}, method = RequestMethod.Get, endpoint = '', _execute = true }: Params) => {
 	const {
 		headers,
 		addHeaders,
@@ -26,7 +26,7 @@ export const useAPI = ({ options = {}, method = RequestMethod.Get, endpoint = ''
 
 	const [loading, setLoading] = React.useState<boolean>(false);
 	const [error, setError] = React.useState<object | null>(null);
-	const [data, setData] = React.useState<any>(null);
+	const [data, setData] = React.useState<object | object[] | null>(null);
 
 	React.useEffect(() => {
 		async function loadData() {
@@ -52,23 +52,20 @@ export const useAPI = ({ options = {}, method = RequestMethod.Get, endpoint = ''
 					}
 
 					// Deal with jsonAPI / user input / query strings. Ugly but works.
-					//
 					const query =
 						endpoint.startsWith('jsonapi') || endpoint.includes('_format=json')
 							? `${url}${endpoint}`
 							: endpoint.includes('?')
 							? `${url}${endpoint}&_format=json`
 							: `${url}${endpoint}?_format=json`;
+					// body not allowed on GET requests. #toDo - PATCH and DELETE ?
 					const settings = {
 						method,
 						headers,
-						...(options && RequestMethod.Post === method ? { body: JSON.stringify(options) } : {}), // body not allowed on Get requests
+						...(body && RequestMethod.Post === method ? { body: JSON.stringify(body) } : {}),
 					};
-
 					const response = await fetch(query, settings);
 					const parsedResponse = await response.json();
-
-					console.log('response, parsedResponse', response, parsedResponse);
 
 					setLoading(false);
 					// Check for errors from Drupal
