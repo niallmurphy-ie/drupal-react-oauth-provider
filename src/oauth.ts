@@ -45,6 +45,7 @@ export const refreshToken = async ({
 
 	if (response.ok && parsedResponse.access_token) {
 		addHeaders('Authorization', `${parsedResponse.token_type} ${parsedResponse.access_token}`);
+		addHeaders('Content-Type', 'application/json');
 		const newToken = Object.assign({}, parsedResponse);
 		newToken.date = Math.floor(Date.now() / 1000);
 		newToken.expirationDate = newToken.date + newToken.expires_in;

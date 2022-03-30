@@ -51,12 +51,13 @@ export const useAPI = ({ options = {}, method = RequestMethod.Get, endpoint = ''
 						});
 					}
 
-					// Deal with user input into useAPI / useLazyAPI
-					const query = endpoint.includes('_format=json')
-						? `${url}${endpoint}`
-						: endpoint.includes('?')
-						? `${url}${endpoint}&_format=json`
-						: `${url}${endpoint}?_format=json`;
+					// Deal with jsonAPI / user input / query strings. Ugly but works.
+					const query =
+						endpoint.startsWith('jsonapi') || endpoint.includes('_format=json')
+							? `${url}${endpoint}`
+							: endpoint.includes('?')
+							? `${url}${endpoint}&_format=json`
+							: `${url}${endpoint}?_format=json`;
 					const settings = {
 						method,
 						headers,
