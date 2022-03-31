@@ -48,12 +48,10 @@ export const refreshToken = async ({
 		newToken.date = Math.floor(Date.now() / 1000);
 		newToken.expirationDate = newToken.date + newToken.expires_in;
 		setIsAuthenticated(true);
-		// localStorage.clear();
 		localStorage.setItem('token', JSON.stringify(token));
 		handleSetToken(newToken);
 	} else {
 		localStorage.clear();
-		console.log('response, parsedResponse', response, parsedResponse);
 	}
 	return parsedResponse;
 };
