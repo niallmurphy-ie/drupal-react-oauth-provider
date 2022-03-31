@@ -1,9 +1,9 @@
 # react-drupal-Oauth-provider
-#
-##### React Context provider and hooks for Drupal, with support for Oauth2 authentication. 
+
+##### React Context provider and hooks for Drupal, with support for Oauth2 authentication.
 ##### Simplify headless Drupal REST and authentication.
-#
-#
+<br/>
+
 - [x] Written in Typescript
 - [x] Zero dependencies
 - [x] Collaboration, feedback, and feature requests welcome
@@ -16,6 +16,7 @@
  - GET, POST, PATCH, and DELETE supported
  - `_format=json` added by default. `_format=hal_json` can be added manually
 
+#
 >  Lazy?
 
 Taking inspiration from [Apollo GraphQL's](https://www.apollographql.com/docs/react/data/queries#manual-execution-with-uselazyquery) `useLazyQuery`, the hooks provided can be triggered at any time, instead of when the React component is rendered.
@@ -23,7 +24,8 @@ Taking inspiration from [Apollo GraphQL's](https://www.apollographql.com/docs/re
 ## How does it work?
 
 ### Wrap your React app with DrupalProvider.
-#
+<br/>
+
 ```javascript
 import { DrupalProvider } from 'react-drupal-hooks';
 const config = {
@@ -39,7 +41,8 @@ ReactDOM.render(
 );
 ```
 ### Log users in with `useLazyLogin`
-#
+<br/>
+
 ```javascript
 import { useLazyLogin } from 'react-drupal-hooks';
 ...
@@ -57,7 +60,8 @@ const [login, { loading, error, data }] = useLazyLogin();
     }
 ```
 ### Check authentication status with `isAuthenticated`
-#
+<br/>
+
 ```javascript
 import { isAuthenticated } from 'react-drupal-hooks';
 ...
@@ -83,7 +87,8 @@ onClick={() =>
 }
 ```
 ### Log out with `useLazyLogout`
-#
+<br/>
+
 ```javascript
 import { useLazyLogout } from 'react-drupal-hooks';
 ...
@@ -94,9 +99,10 @@ const [logout] = useLazyLogout();
 ### ~~Deal with tokens, refreshing them, and storing them~~
 
 
+<br/><br/>
 
 ##### Tested with [Simple OAuth (OAuth2) & OpenID Connect](https://www.drupal.org/project/simple_oauth/)
 
-
+<br/>
 
 License: MIT
