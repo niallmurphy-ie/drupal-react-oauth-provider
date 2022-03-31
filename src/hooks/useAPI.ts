@@ -64,15 +64,16 @@ export const useAPI = ({ body = {}, method = 'GET', endpoint = '', _execute = tr
 						setData({
 							message: 'Content deleted.',
 						});
-						setError(null); // For multiple uses of useAPI.
+						setError(null);
 					} else {
 						if (response.body) {
 							const parsedResponse = await response.json();
 							setLoading(false);
 							if (response.ok) {
 								setData(parsedResponse);
-								setError(null); // For multiple uses of useAPI.
+								setError(null);
 							} else {
+								setData(null);
 								setError(parsedResponse);
 							}
 						} else {
