@@ -1,7 +1,7 @@
 {
-  "name": "react-drupal-hooks",
+  "name": "react-drupal-oauth-provider",
   "version": "0.1.0",
-  "description": "React hooks for Drupal's REST API",
+  "description": "React Oauth Provider and hooks for Drupal REST / JSONAPI",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "dependencies": {},

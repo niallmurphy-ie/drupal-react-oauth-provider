@@ -5,12 +5,13 @@ import { Params } from './useAPI';
 /**
  * @example
  * const [lazyAPI, { loading, error, data }] = useLazyAPI();
+ *
  */
 
 export const useLazyAPI = () => {
 	const [exectute, setExecute] = React.useState<boolean>(false);
 	const [body, setBody] = React.useState<object>({});
-	const [method, setMethod] = React.useState<'get' | 'post' | 'patch' | 'delete'>('get');
+	const [method, setMethod] = React.useState<'GET' | 'POST' | 'PATCH' | 'DELETE'>('GET');
 	const [endpoint, setEndpoint] = React.useState<string>('');
 
 	// API with _execute set to false so it doesn't fire.
@@ -20,7 +21,7 @@ export const useLazyAPI = () => {
 	React.useEffect(() => {
 		setExecute(false);
 		setBody({});
-		setMethod('get');
+		setMethod('GET');
 		setEndpoint('');
 	}, [data, loading, error]);
 

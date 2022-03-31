@@ -1,5 +1,5 @@
 import React from 'react';
-import { refreshToken } from './refreshToken';
+import { refreshToken } from './util/refreshToken';
 
 export interface Token {
 	date: number;
@@ -30,6 +30,11 @@ interface ProviderConfig {
 	logoutUser: () => void;
 }
 
+interface ProviderProps {
+	readonly children: React.ReactNode;
+	config: ProviderConfig;
+}
+
 export const DrupalContext = React.createContext<ProviderConfig>({
 	url: '',
 	token: null,
@@ -41,11 +46,6 @@ export const DrupalContext = React.createContext<ProviderConfig>({
 	storeOauthSettings: () => {},
 	logoutUser: () => {},
 });
-
-interface ProviderProps {
-	readonly children: React.ReactNode;
-	config: ProviderConfig;
-}
 
 export const DrupalProvider = ({ children, config }: ProviderProps) => {
 	const [headers, setHeaders] = React.useState<Headers>(

@@ -1,5 +1,5 @@
-import { Token } from './context';
-import { OauthSettings } from './context';
+import { Token } from '../context';
+import { OauthSettings } from '../context';
 interface RefreshToken {
 	handleSetToken: (token: Token) => void;
 }
