@@ -4,26 +4,26 @@ import { RequestMethod } from '../../enums/RequestMethod';
 interface Login {
 	username: string;
 	password: string;
+	client_id: string;
+	client_secret: string;
+	grant_type: string;
+	scope: string;
 }
 export const useLazyLogin = () => {
-	const {
-		getHeaders,
-		addHeaders,
-		url,
-		client_id,
-		client_secret,
-		grant_type,
-		scope,
-		handleSetToken,
-		isAuthenticated,
-		setIsAuthenticated,
-	} = React.useContext(DrupalContext);
+	const { getHeaders, addHeaders, url, handleSetToken, isAuthenticated, setIsAuthenticated, storeOauthSettings } =
+		React.useContext(DrupalContext);
 
 	// Lazy functionality through execute like Apollo's useLazyQuery.
 	// Seems like providing a function is the best way for something like login.
 	const [execute, setExecute] = React.useState<boolean>(false);
+
+	// Data for login
 	const [username, setUsername] = React.useState<string | null>(null);
 	const [password, setPassword] = React.useState<string | null>(null);
+	const [client_id, setClientId] = React.useState<string | null>(null);
+	const [client_secret, setClientSecret] = React.useState<string | null>(null);
+	const [grant_type, setGrantType] = React.useState<string | null>(null);
+	const [scope, setScope] = React.useState<string | null>(null);
 
 	const [loading, setLoading] = React.useState<boolean>(false);
 	const [error, setError] = React.useState<object | null>(null);
@@ -32,7 +32,16 @@ export const useLazyLogin = () => {
 	React.useEffect(() => {
 		async function loadData() {
 			try {
-				if (execute && username && password && !isAuthenticated) {
+				if (
+					execute &&
+					username &&
+					password &&
+					grant_type &&
+					client_id &&
+					client_secret &&
+					scope &&
+					!isAuthenticated
+				) {
 					setLoading(true);
 
 					const formData = new URLSearchParams();
@@ -51,38 +60,50 @@ export const useLazyLogin = () => {
 					const parsedResponse = await response.json();
 
 					if (response.ok && parsedResponse.access_token) {
-						addHeaders('Authorization', `${parsedResponse.token_type} ${parsedResponse.access_token}`);
-						addHeaders('Content-Type', 'application/json');
-						const newToken = Object.assign({}, parsedResponse);
-						newToken.date = Math.floor(Date.now() / 1000);
-						newToken.expirationDate = newToken.date + newToken.expires_in;
-						setIsAuthenticated(true);
-						localStorage.setItem('token', JSON.stringify(newToken));
-						handleSetToken(newToken);
+						handleSetToken(parsedResponse);
+						storeOauthSettings({
+							url,
+							client_id,
+							client_secret,
+							grant_type,
+							scope,
+						});
 						setData(parsedResponse);
 					} else {
 						localStorage.clear();
 						setError(parsedResponse);
 					}
-					setLoading(false);
-					setExecute(false);
 					setUsername(null);
 					setPassword(null);
+					setClientId(null);
+					setClientSecret(null);
+					setGrantType(null);
+					setScope(null);
+					setLoading(false);
+					setExecute(false);
 				}
 			} catch (error) {
+				setUsername(null);
+				setPassword(null);
+				setClientId(null);
+				setClientSecret(null);
+				setGrantType(null);
+				setScope(null);
 				setLoading(false);
 				setError(error as object);
 				setExecute(false);
-				setUsername(null);
-				setPassword(null);
 			}
 		}
 		loadData();
 	}, [execute, username, password]);
 
-	const login = ({ username, password }: Login) => {
+	const login = ({ username, password, client_id, client_secret, grant_type, scope }: Login) => {
 		setUsername(username);
 		setPassword(password);
+		setClientId(client_id);
+		setClientSecret(client_secret);
+		setGrantType(grant_type);
+		setScope(scope);
 		setExecute(true);
 	};
 

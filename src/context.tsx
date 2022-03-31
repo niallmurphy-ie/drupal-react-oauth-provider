@@ -1,6 +1,7 @@
 import React from 'react';
 import { refreshToken } from './refreshToken';
 export interface Token {
+	date?: number;
 	access_token: string;
 	refresh_token: string;
 	expires_in: number;
@@ -10,35 +11,32 @@ export interface Token {
 
 interface ProviderConfig {
 	url: string;
-	client_id: string;
-	client_secret: string;
-	grant_type: string;
-	scope: string;
 	token: Token | null;
 	handleSetToken: (token: Token) => void;
 	isAuthenticated: boolean;
 	setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
 	getHeaders: () => Headers;
 	addHeaders: (key: string, value: string) => void;
+	storeOauthSettings: (settings: OauthSettings) => void;
 }
 
-export interface Credentials {
-	name: string;
-	pass: string;
+export interface OauthSettings {
+	url: string;
+	client_id: string;
+	client_secret: string;
+	grant_type: string;
+	scope: string;
 }
 
 export const DrupalContext = React.createContext<ProviderConfig>({
 	url: '',
-	client_id: '',
-	client_secret: '',
-	grant_type: '',
-	scope: '',
 	token: null,
 	isAuthenticated: false,
 	getHeaders: () => new Headers(),
 	handleSetToken: () => {},
 	setIsAuthenticated: () => {},
 	addHeaders: () => {},
+	storeOauthSettings: () => {},
 });
 
 interface ProviderProps {
@@ -69,10 +67,19 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 	};
 	// We are setting tokens from outside React because of rules of hooks. Handler needed for state to work correctly.
 	const handleSetToken = (newToken: Token) => {
-		setToken(newToken);
-		localStorage.removeItem('token'); // toDo
+		newToken.date = Math.floor(Date.now() / 1000);
+		newToken.expirationDate = newToken.date + newToken.expires_in;
 		localStorage.setItem('token', JSON.stringify(newToken));
+		setIsAuthenticated(true);
+		setToken(newToken);
+		addHeaders('Authorization', `${newToken.token_type} ${newToken.access_token}`);
+		addHeaders('Content-Type', 'application/json');
 	};
+	// Store oauth settings in localStorage
+	const storeOauthSettings = (oauthSettings: OauthSettings) => {
+		localStorage.setItem('oauthSettings', JSON.stringify(oauthSettings));
+	};
+
 	React.useEffect(() => {
 		if (!token || isAuthenticated) return;
 		if (token.expirationDate > Math.floor(Date.now() / 1000)) {
@@ -82,15 +89,7 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 		if (token.expirationDate < Math.floor(Date.now() / 1000)) {
 			// Ok to call this non async as the state will update
 			refreshToken({
-				url: config.url,
-				client_id: config.client_id,
-				client_secret: config.client_secret,
-				scope: config.scope,
-				token,
 				handleSetToken,
-				isAuthenticated,
-				setIsAuthenticated,
-				addHeaders,
 			});
 		}
 	}, [token]);
@@ -105,6 +104,7 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 				handleSetToken,
 				isAuthenticated,
 				setIsAuthenticated,
+				storeOauthSettings,
 			}}
 		>
 			{children}

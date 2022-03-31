@@ -18,18 +18,7 @@ export interface Params {
  */
 
 export const useAPI = ({ body = {}, method = RequestMethod.Get, endpoint = '', _execute = true }: Params) => {
-	const {
-		getHeaders,
-		addHeaders,
-		url,
-		client_id,
-		client_secret,
-		token,
-		scope,
-		handleSetToken,
-		isAuthenticated,
-		setIsAuthenticated,
-	} = React.useContext(DrupalContext);
+	const { getHeaders, url, token, handleSetToken, isAuthenticated } = React.useContext(DrupalContext);
 
 	const [loading, setLoading] = React.useState<boolean>(false);
 	const [error, setError] = React.useState<object | null>(null);
@@ -45,15 +34,7 @@ export const useAPI = ({ body = {}, method = RequestMethod.Get, endpoint = '', _
 					if (token !== null && token.expirationDate < Math.floor(Date.now() / 1000)) {
 						// Must call this async so that the token is set before making the request.
 						await refreshToken({
-							url: url,
-							client_id,
-							client_secret,
-							scope,
-							token,
 							handleSetToken,
-							isAuthenticated,
-							setIsAuthenticated,
-							addHeaders,
 						});
 					}
 
