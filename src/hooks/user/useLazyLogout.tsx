@@ -14,7 +14,6 @@ export const useLazyLogout = () => {
 				}
 			} catch (error) {
 				setExecute(false);
-				console.log(error as Error);
 			}
 		}
 		loadData();
