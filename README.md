@@ -114,9 +114,9 @@ const [logout] = useLazyLogout();
 <button onClick={() => logout()}>Logout</button>
 ```
 
-# Note
+## Note
 
-There is a problem with Jest tests. They require `react` and `react-dom` as devDependencies, but this breaks production. And help writing more comprehensive tests would be welcome. Unit testing the lazy functions is difficult so I think E2E testing with Cyrpus would work better. I've seen some people talk testing Apollo's lazy queries being difficult.
+There is a problem with Jest tests. They require `react` and `react-dom` as devDependencies, but this breaks production. And help writing more comprehensive tests would be welcome. Unit testing the lazy functions is difficult so I think E2E testing with Cyrpus would work better. I've seen some people say that testing Apollo's lazy queries is difficult.
 
 ##### I hope the Drupal community can share ideas on how to make this better.
 

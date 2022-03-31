@@ -32,12 +32,8 @@
 		// "paths": {},                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
 		// "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
 		// "typeRoots": [],                                  /* Specify multiple folders that act like `./node_modules/@types`. */
-		"types": [
-			"node",
-			"jest",
-			"@testing-library/jest-dom"
-		],
-		 /* Specify type package names to be included without being referenced in a source file. */
+		"types": ["node", "jest", "@testing-library/jest-dom"],
+		/* Specify type package names to be included without being referenced in a source file. */
 		// "allowUmdGlobalAccess": true,                     /* Allow accessing UMD globals from modules. */
 		// "resolveJsonModule": true,                        /* Enable importing .json files */
 		// "noResolve": true,                                /* Disallow `import`s, `require`s or `<reference>`s from expanding the number of files TypeScript should add to a project. */
@@ -102,8 +98,7 @@
 
 		/* Completeness */
 		// "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
-		"skipLibCheck": true, /* Skip type checking all .d.ts files. */
-		"no-empty": false,
+		"skipLibCheck": true /* Skip type checking all .d.ts files. */
 	},
 	"include": ["src"],
 	"exclude": ["node_modules", "**/__tests__/*"]

@@ -40,11 +40,11 @@ export const DrupalContext = React.createContext<ProviderConfig>({
 	token: null,
 	isAuthenticated: false,
 	getHeaders: () => new Headers(),
-	addHeaders: () => {},
-	removeHeaders: () => {},
-	handleSetToken: () => {},
-	storeOauthSettings: () => {},
-	logoutUser: () => {},
+	addHeaders: () => undefined,
+	removeHeaders: () => undefined,
+	handleSetToken: () => undefined,
+	storeOauthSettings: () => undefined,
+	logoutUser: () => undefined,
 });
 
 export const DrupalProvider = ({ children, config }: ProviderProps) => {

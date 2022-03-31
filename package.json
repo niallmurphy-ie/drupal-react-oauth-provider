@@ -1,6 +1,6 @@
 {
   "name": "drupal-react-oauth-provider",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Drupal React Oauth Provider and Hooks for REST / JSONAPI etc.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -37,10 +37,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/niallmurphy-ie/react-drupal-hooks.git"
+    "url": "git+https://github.com/niallmurphy-ie/drupal-react-oauth-provider.git"
   },
   "bugs": {
-    "url": "https://github.com/niallmurphy-ie/react-drupal-hooks/issues"
+    "url": "https://github.com/niallmurphy-ie/drupal-react-oauth-provider/issues"
   },
   "files": [
     "lib/**/*"
