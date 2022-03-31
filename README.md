@@ -55,7 +55,7 @@ ReactDOM.render(
 );
 ```
 
-### Log users in with `useLazyLogin`
+### Log in users with `useLazyLogin`
 
 ```javascript
 import { useLazyLogin } from 'drupal-react-oauth-provider';

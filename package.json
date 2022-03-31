@@ -1,5 +1,5 @@
 {
-  "name": "react-drupal-oauth-provider",
+  "name": "drupal-react-oauth-provider",
   "version": "0.1.0",
   "description": "React Oauth Provider and hooks for Drupal REST / JSONAPI",
   "main": "lib/index.js",

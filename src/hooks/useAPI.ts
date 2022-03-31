@@ -8,7 +8,7 @@ export type Params = {
 	readonly endpoint: string;
 	readonly body: object;
 	_execute?: boolean;
-}
+};
 
 /**
  * Ignore _execute. It is used for lazyAPI.
@@ -64,11 +64,17 @@ export const useAPI = ({ body = {}, method = 'GET', endpoint = '', _execute = tr
 						setData({
 							message: 'Content deleted.',
 						});
+						setError(null); // For multiple uses of useAPI.
 					} else {
 						if (response.body) {
 							const parsedResponse = await response.json();
 							setLoading(false);
-							response.ok ? setData(parsedResponse) : setError(parsedResponse);
+							if (response.ok) {
+								setData(parsedResponse);
+								setError(null); // For multiple uses of useAPI.
+							} else {
+								setError(parsedResponse);
+							}
 						} else {
 							setLoading(false);
 							method === 'DELETE' // Read comments above. #toDo
