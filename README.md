@@ -24,7 +24,19 @@
 
 Taking inspiration from [Apollo GraphQL's](https://www.apollographql.com/docs/react/data/queries#manual-execution-with-uselazyquery) `useLazyQuery`, the hooks provided can be triggered at any time, instead of when the React component is rendered.
 
-## How does it work?
+# Drupal Installation
+
+#### Requirements
+
+-   Oauth2 (Tested with [Simple OAuth (OAuth2) & OpenID Connect](https://www.drupal.org/project/simple_oauth/))
+-   Drupal 8+
+
+#### Recommended
+
+-   Enable REST / RESTUI / JSON:API / Views etc.
+-   Create a "me" user View with `Contextual Filter: User ID: User ID from logged in user` to get user roles etc. Access it with `useAPI` or `useLazyAPI`
+
+# How does it work?
 
 ### Wrap your React app with DrupalProvider.
 
@@ -102,18 +114,15 @@ const [logout] = useLazyLogout();
 <button onClick={() => logout()}>Logout</button>
 ```
 
-<br/><br/>
+# Note
 
-##### Note:
 
 There is a problem with Jest tests. They require `react` and `react-dom` as devDependencies, but this breaks production. And help writing more comprehensive tests would be welcome. Unit testing the lazy functions is difficult so I think E2E testing with Cyrpus would work better. I've seen some people talk testing Apollo's lazy queries being difficult.
 
-### I hope the Drupal community can share ideas on how to make this better.
+##### I hope the Drupal community can share ideas on how to make this better.
 
 ## Enjoy your headless Drupal.
 
-##### Tested with [Simple OAuth (OAuth2) & OpenID Connect](https://www.drupal.org/project/simple_oauth/)
 
-<br/>
 
 License: MIT
