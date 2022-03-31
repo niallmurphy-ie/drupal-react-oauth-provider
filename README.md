@@ -6,6 +6,8 @@
 
 - [x] Written in Typescript
 - [x] Zero dependencies
+- [x] Drupal 8+
+- [ ] Drupal 7 - (Planned)
 - [x] Collaboration, feedback, and feature requests welcome
 
 
@@ -96,10 +98,19 @@ const [logout] = useLazyLogout();
 ...
 <button onClick={() => logout()}>Logout</button>
 ```
-### ~~Deal with tokens, refreshing them, and storing them~~
-
 
 <br/><br/>
+
+I hope the Drupal community can share ideas on how to make this better.
+
+##### Note:
+
+There is a problem with Jest tests. They require `react` and `react-dom` as devDependencies, but this breaks production. And help writing more comprehensive tests would be welcome. Unit testing the lazy functions is difficult so I think E2E testing with Cyrpus would work better. I've seen some people talk testing Apollo's lazy queries being difficult.
+
+
+## Enjoy your headless Drupal.
+
+<br />
 
 ##### Tested with [Simple OAuth (OAuth2) & OpenID Connect](https://www.drupal.org/project/simple_oauth/)
 
