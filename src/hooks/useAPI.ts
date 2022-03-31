@@ -3,7 +3,7 @@ import { DrupalContext } from '../context';
 import { refreshToken } from '../util/refreshToken';
 
 // Hide _execute
-export interface Params {
+export type Params = {
 	readonly method: 'GET' | 'POST' | 'PATCH' | 'DELETE';
 	readonly endpoint: string;
 	readonly body: object;
@@ -57,22 +57,28 @@ export const useAPI = ({ body = {}, method = 'GET', endpoint = '', _execute = tr
 				};
 				try {
 					const response = await fetch(query, settings);
-					// DELETE doesn't seem to give a valid JSON
-					// This is hacky. #toDO - figure out why.
-					if (testJSON(response)) {
-						const parsedResponse = await response.json();
+					// Drupal's 204 for DELETE messes with fetch.
+					// https://github.com/whatwg/fetch/issues/113
+					if (method === 'DELETE' && response.status === 204) {
 						setLoading(false);
-						response.ok ? setData(parsedResponse) : setError(parsedResponse);
+						setData({
+							message: 'Content deleted.',
+						});
 					} else {
-						setLoading(false);
-						method === 'DELETE' // Read comments above. #toDo
-							? setData({
-									message:
-										"JSON error. This is probably ok because it was a DELETE. Drupal doesn't return a valid JSON object for delete.",
-							  })
-							: setError({
-									message: 'JSON error. This is not ok.',
-							  });
+						if (response.body) {
+							const parsedResponse = await response.json();
+							setLoading(false);
+							response.ok ? setData(parsedResponse) : setError(parsedResponse);
+						} else {
+							setLoading(false);
+							method === 'DELETE' // Read comments above. #toDo
+								? setData({
+										message: 'Content deleted.',
+								  })
+								: setError({
+										message: 'JSON error. This is not ok.',
+								  });
+						}
 					}
 				} catch (error) {
 					setLoading(false);
@@ -85,15 +91,3 @@ export const useAPI = ({ body = {}, method = 'GET', endpoint = '', _execute = tr
 
 	return { loading, error, data };
 };
-
-function testJSON(strJson: any) {
-	try {
-		const parsed = JSON.parse(strJson);
-		if (parsed && typeof parsed === 'object') {
-			return true;
-		}
-	} catch {
-		return false;
-	}
-	return false;
-}
