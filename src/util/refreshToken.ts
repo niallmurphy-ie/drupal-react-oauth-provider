@@ -12,9 +12,9 @@ export const refreshToken = async ({ handleSetToken }: RefreshToken) => {
 
 	const formData = new URLSearchParams();
 	formData.append('grant_type', 'refresh_token');
-	formData.append('client_id', oauthConfig.client_id);
-	formData.append('client_secret', oauthConfig.client_secret);
-	formData.append('scope', oauthConfig.scope);
+	formData.append('client_id', oauthConfig._clientID);
+	formData.append('client_secret', oauthConfig._clientSecret);
+	formData.append('scope', oauthConfig._scope);
 	formData.append('refresh_token', token.refresh_token);
 
 	const response = await fetch(`${oauthConfig.url}oauth/token`, {

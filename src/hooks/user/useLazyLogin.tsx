@@ -29,12 +29,12 @@ export const useLazyLogin = () => {
 	// Seems like providing a function is the best way for something like login.
 	const [execute, setExecute] = React.useState<boolean>(false);
 
-	const [username, setUsername] = React.useState<string | null>(null);
-	const [password, setPassword] = React.useState<string | null>(null);
-	const [client_id, setClientId] = React.useState<string | null>(null);
-	const [client_secret, setClientSecret] = React.useState<string | null>(null);
-	const [grant_type, setGrantType] = React.useState<string | null>(null);
-	const [scope, setScope] = React.useState<string | null>(null);
+	const [_username, setUsername] = React.useState<string | null>(null);
+	const [_password, setPassword] = React.useState<string | null>(null);
+	const [_clientID, setClientId] = React.useState<string | null>(null);
+	const [_clientSecret, setClientSecret] = React.useState<string | null>(null);
+	const [_grantType, setGrantType] = React.useState<string | null>(null);
+	const [_scope, setScope] = React.useState<string | null>(null);
 
 	const [loading, setLoading] = React.useState<boolean>(false);
 	const [error, setError] = React.useState<object | null>(null);
@@ -45,23 +45,23 @@ export const useLazyLogin = () => {
 			try {
 				if (
 					execute &&
-					username &&
-					password &&
-					grant_type &&
-					client_id &&
-					client_secret &&
-					scope &&
+					_username &&
+					_password &&
+					_grantType &&
+					_clientID &&
+					_clientSecret &&
+					_scope &&
 					!isAuthenticated
 				) {
 					setLoading(true);
 
 					const formData = new URLSearchParams();
-					formData.append('grant_type', grant_type);
-					formData.append('client_id', client_id);
-					formData.append('client_secret', client_secret);
-					formData.append('scope', scope);
-					formData.append('username', username);
-					formData.append('password', password);
+					formData.append('grant_type', _grantType);
+					formData.append('client_id', _clientID);
+					formData.append('client_secret', _clientSecret);
+					formData.append('scope', _scope);
+					formData.append('username', _username);
+					formData.append('password', _password);
 
 					const response = await fetch(`${url}oauth/token`, {
 						method: 'post',
@@ -76,10 +76,10 @@ export const useLazyLogin = () => {
 						handleSetToken(parsedResponse);
 						storeOauthSettings({
 							url,
-							client_id,
-							client_secret,
-							grant_type,
-							scope,
+							_clientID,
+							_clientSecret,
+							_grantType,
+							_scope,
 						});
 						setData(parsedResponse);
 					} else {
@@ -107,7 +107,7 @@ export const useLazyLogin = () => {
 			}
 		}
 		loadData();
-	}, [execute, username, password]);
+	}, [execute, _username, _password]);
 
 	const login = ({ username, password, client_id, client_secret, grant_type, scope }: Login) => {
 		setUsername(username);

@@ -12,10 +12,10 @@ export interface Token {
 // Oauth Settings set in login function.
 export interface OauthSettings {
 	url: string;
-	client_id: string;
-	client_secret: string;
-	grant_type: string;
-	scope: string;
+	_clientID: string;
+	_clientSecret: string;
+	_grantType: string;
+	_scope: string;
 }
 
 interface ProviderConfig {

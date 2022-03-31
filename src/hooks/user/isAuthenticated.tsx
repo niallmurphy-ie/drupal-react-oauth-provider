@@ -5,7 +5,7 @@ import { DrupalContext } from '../../context';
  * @example
  * {isAuthenticated() ? "Yes" : "No"}
  */
-export const isAuthenticated = (): boolean => {
+export const authenticated = (): boolean => {
 	const { isAuthenticated } = React.useContext(DrupalContext);
 	return isAuthenticated;
 };

@@ -13,12 +13,12 @@ import { Params } from './useAPI';
 
 export const useLazyAPI = () => {
 	const [exectute, setExecute] = React.useState<boolean>(false);
-	const [body, setBody] = React.useState<object>({});
-	const [method, setMethod] = React.useState<'GET' | 'POST' | 'PATCH' | 'DELETE'>('GET');
-	const [endpoint, setEndpoint] = React.useState<string>('');
+	const [_body, setBody] = React.useState<object>({});
+	const [_method, setMethod] = React.useState<'GET' | 'POST' | 'PATCH' | 'DELETE'>('GET');
+	const [_endpoint, setEndpoint] = React.useState<string>('');
 
 	// API with _execute set to false so it doesn't fire.
-	const { data, loading, error } = useAPI({ body, method, endpoint, _execute: exectute });
+	const { data, loading, error } = useAPI({ body: _body, method: _method, endpoint: _endpoint, _execute: exectute });
 
 	// When anything from useAPI changes, set execute to false so that the API can be used again.
 	React.useEffect(() => {

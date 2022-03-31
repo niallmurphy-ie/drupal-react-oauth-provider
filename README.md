@@ -74,12 +74,12 @@ const [login, { loading, error, data }] = useLazyLogin();
     }
 ```
 
-### Check authentication status with `isAuthenticated`
+### Check authentication status with `authenticated`
 
 ```javascript
-import { isAuthenticated } from 'drupal-react-oauth-provider';
+import { authenticated } from 'drupal-react-oauth-provider';
 ...
-{isAuthenticated() ? 'You are authenticated': 'You are not authenticated'}
+{authenticated() ? 'You are authenticated': 'You are not authenticated'}
 ```
 
 ### Make queries with `useAPI` or `useLazyAPI`
@@ -116,13 +116,10 @@ const [logout] = useLazyLogout();
 
 # Note
 
-
 There is a problem with Jest tests. They require `react` and `react-dom` as devDependencies, but this breaks production. And help writing more comprehensive tests would be welcome. Unit testing the lazy functions is difficult so I think E2E testing with Cyrpus would work better. I've seen some people talk testing Apollo's lazy queries being difficult.
 
 ##### I hope the Drupal community can share ideas on how to make this better.
 
 ## Enjoy your headless Drupal.
-
-
 
 License: MIT
