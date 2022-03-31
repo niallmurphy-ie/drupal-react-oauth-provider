@@ -1,12 +1,21 @@
 import React from 'react';
 import { refreshToken } from './refreshToken';
+
 export interface Token {
-	date?: number;
+	date: number;
 	access_token: string;
 	refresh_token: string;
 	expires_in: number;
 	token_type: string;
 	expirationDate: number;
+}
+// Oauth Settings set in login function.
+export interface OauthSettings {
+	url: string;
+	client_id: string;
+	client_secret: string;
+	grant_type: string;
+	scope: string;
 }
 
 interface ProviderConfig {
@@ -18,14 +27,7 @@ interface ProviderConfig {
 	addHeaders: (key: string, value: string) => void;
 	removeHeaders: (key: string) => void;
 	storeOauthSettings: (settings: OauthSettings) => void;
-}
-
-export interface OauthSettings {
-	url: string;
-	client_id: string;
-	client_secret: string;
-	grant_type: string;
-	scope: string;
+	logoutUser: () => void;
 }
 
 export const DrupalContext = React.createContext<ProviderConfig>({
@@ -37,6 +39,7 @@ export const DrupalContext = React.createContext<ProviderConfig>({
 	removeHeaders: () => {},
 	handleSetToken: () => {},
 	storeOauthSettings: () => {},
+	logoutUser: () => {},
 });
 
 interface ProviderProps {
@@ -45,7 +48,9 @@ interface ProviderProps {
 }
 
 export const DrupalProvider = ({ children, config }: ProviderProps) => {
-	const [headers, setHeaders] = React.useState<Headers>(new Headers({ Accept: 'application/json' }));
+	const [headers, setHeaders] = React.useState<Headers>(
+		new Headers({ 'Content-Type': 'application/json', Accept: 'application/json' }),
+	);
 	const [token, setToken] = React.useState<Token | null>(
 		localStorage.getItem('token') !== null ? JSON.parse(localStorage.getItem('token') as string) : null,
 	);
@@ -81,11 +86,19 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 		addHeaders('Authorization', `${newToken.token_type} ${newToken.access_token}`);
 		addHeaders('Content-Type', 'application/json');
 	};
+	const logoutUser = () => {
+		localStorage.clear();
+		setToken(null);
+		setIsAuthenticated(false);
+		removeHeaders('Authorization');
+		removeHeaders('Content-Type');
+	};
 	// Store oauth settings in localStorage
 	const storeOauthSettings = (oauthSettings: OauthSettings) => {
 		localStorage.setItem('oauthSettings', JSON.stringify(oauthSettings));
 	};
 
+	// Refresh token if it is expired when app is opened.
 	React.useEffect(() => {
 		if (!token || isAuthenticated) return;
 		if (token.expirationDate > Math.floor(Date.now() / 1000)) {
@@ -111,6 +124,7 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 				getHeaders,
 				addHeaders,
 				removeHeaders,
+				logoutUser,
 			}}
 		>
 			{children}
