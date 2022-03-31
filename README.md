@@ -1,4 +1,4 @@
-# react-drupal-Oauth-provider
+# drupal-react-oauth-provider
 
 ##### React Context provider and hooks for Drupal, with support for Oauth2 authentication.
 
@@ -29,7 +29,7 @@ Taking inspiration from [Apollo GraphQL's](https://www.apollographql.com/docs/re
 ### Wrap your React app with DrupalProvider.
 
 ```javascript
-import { DrupalProvider } from 'react-drupal-hooks';
+import { DrupalProvider } from 'drupal-react-oauth-provider';
 const config = {
 	url: 'https://d9-testing.niallmurphy.dev/',
 };
@@ -46,7 +46,7 @@ ReactDOM.render(
 ### Log users in with `useLazyLogin`
 
 ```javascript
-import { useLazyLogin } from 'react-drupal-hooks';
+import { useLazyLogin } from 'drupal-react-oauth-provider';
 ...
 const [login, { loading, error, data }] = useLazyLogin();
 ...
@@ -65,7 +65,7 @@ const [login, { loading, error, data }] = useLazyLogin();
 ### Check authentication status with `isAuthenticated`
 
 ```javascript
-import { isAuthenticated } from 'react-drupal-hooks';
+import { isAuthenticated } from 'drupal-react-oauth-provider';
 ...
 {isAuthenticated() ? 'You are authenticated': 'You are not authenticated'}
 ```
@@ -75,7 +75,7 @@ import { isAuthenticated } from 'react-drupal-hooks';
 Get, post, patch, or delete any data you need. eg. Views.
 
 ```javascript
-import { useLazyAPI } from 'react-drupal-hooks';
+import { useLazyAPI } from 'drupal-react-oauth-provider';
 ...
 const [lazyAPI, { loading, error, data }] = useLazyAPI();
 ...
@@ -95,7 +95,7 @@ onClick={() =>
 ### Log out with `useLazyLogout`
 
 ```javascript
-import { useLazyLogout } from 'react-drupal-hooks';
+import { useLazyLogout } from 'drupal-react-oauth-provider';
 ...
 const [logout] = useLazyLogout();
 ...
