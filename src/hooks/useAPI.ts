@@ -1,11 +1,10 @@
 import React from 'react';
 import { DrupalContext } from '../context';
-import { RequestMethod } from '../enums/RequestMethod';
 import { refreshToken } from '../refreshToken';
 
 // Hide _execute
 export interface Params {
-	readonly method: string;
+	readonly method: 'get' | 'post' | 'patch' | 'delete';
 	readonly endpoint: string;
 	readonly body: object;
 	_execute?: boolean;
@@ -17,8 +16,8 @@ export interface Params {
  * const { data, loading, error } = useAPI({ endpoint, method, body });
  */
 
-export const useAPI = ({ body = {}, method = RequestMethod.Get, endpoint = '', _execute = true }: Params) => {
-	const { getHeaders, url, token, handleSetToken, isAuthenticated } = React.useContext(DrupalContext);
+export const useAPI = ({ body = {}, method = 'get', endpoint = '', _execute = true }: Params) => {
+	const { getHeaders, url, token, handleSetToken } = React.useContext(DrupalContext);
 
 	const [loading, setLoading] = React.useState<boolean>(false);
 	const [error, setError] = React.useState<object | null>(null);
@@ -49,7 +48,7 @@ export const useAPI = ({ body = {}, method = RequestMethod.Get, endpoint = '', _
 					const settings = {
 						method,
 						headers: getHeaders(),
-						...(body && RequestMethod.Post === method ? { body: JSON.stringify(body) } : {}),
+						...(body && 'post' === method ? { body: JSON.stringify(body) } : {}),
 					};
 					const response = await fetch(query, settings);
 					const parsedResponse = await response.json();

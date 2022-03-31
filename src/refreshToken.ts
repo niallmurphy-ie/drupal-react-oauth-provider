@@ -5,7 +5,6 @@ interface RefreshToken {
 }
 
 export const refreshToken = async ({ handleSetToken }: RefreshToken) => {
-
 	const oauthConfig: OauthSettings = JSON.parse(localStorage.getItem('oauthSettings') as string);
 	// Get token
 	const token: Token = JSON.parse(localStorage.getItem('token') as string);
@@ -32,5 +31,4 @@ export const refreshToken = async ({ handleSetToken }: RefreshToken) => {
 	} else {
 		localStorage.clear();
 	}
-	return parsedResponse;
 };

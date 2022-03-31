@@ -14,9 +14,9 @@ interface ProviderConfig {
 	token: Token | null;
 	handleSetToken: (token: Token) => void;
 	isAuthenticated: boolean;
-	setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
 	getHeaders: () => Headers;
 	addHeaders: (key: string, value: string) => void;
+	removeHeaders: (key: string) => void;
 	storeOauthSettings: (settings: OauthSettings) => void;
 }
 
@@ -33,9 +33,9 @@ export const DrupalContext = React.createContext<ProviderConfig>({
 	token: null,
 	isAuthenticated: false,
 	getHeaders: () => new Headers(),
-	handleSetToken: () => {},
-	setIsAuthenticated: () => {},
 	addHeaders: () => {},
+	removeHeaders: () => {},
+	handleSetToken: () => {},
 	storeOauthSettings: () => {},
 });
 
@@ -51,12 +51,18 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 	);
 	const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
 
+	/**
+	 * This function will add headers for useAPI(), useLazyAPI().
+	 */
 	const addHeaders = (key: string, value: string) => {
 		const newHeaders = headers;
 		newHeaders.delete(key); // toDo - Crutch? Checks should be enough?
 		newHeaders.append(key, value);
 		setHeaders(newHeaders);
 	};
+	/**
+	 * This function will remove headers for useAPI(), useLazyAPI().
+	 */
 	const removeHeaders = (key: string) => {
 		const newHeaders = headers;
 		newHeaders.delete(key);
@@ -97,14 +103,14 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 	return (
 		<DrupalContext.Provider
 			value={{
-				...config, // includes client_id and client_secret
-				getHeaders,
-				addHeaders,
+				...config, // includes url
 				token,
 				handleSetToken,
 				isAuthenticated,
-				setIsAuthenticated,
 				storeOauthSettings,
+				getHeaders,
+				addHeaders,
+				removeHeaders,
 			}}
 		>
 			{children}

@@ -1,6 +1,5 @@
 import React from 'react';
 import { DrupalContext } from '../../context';
-import { RequestMethod } from '../../enums/RequestMethod';
 interface Login {
 	username: string;
 	password: string;
@@ -9,15 +8,27 @@ interface Login {
 	grant_type: string;
 	scope: string;
 }
+
+/**
+ * The oauth settings get saved to localStorage so refresh tokens work. Doing it this way means you can easily have multiple oauth clients in one app.
+ * @example
+ * const [login, { loading, error, data }] = useLazyLogin();
+ * login({
+ * 	username: 'username',
+ * 	password: 'password',
+ * 	client_id: 'client_id',
+ * 	client_secret: 'client_secret',
+ * 	grant_type: 'grant_type',
+ * 	scope: 'scope',
+ * });
+ */
 export const useLazyLogin = () => {
-	const { getHeaders, addHeaders, url, handleSetToken, isAuthenticated, setIsAuthenticated, storeOauthSettings } =
-		React.useContext(DrupalContext);
+	const { url, handleSetToken, isAuthenticated, storeOauthSettings } = React.useContext(DrupalContext);
 
 	// Lazy functionality through execute like Apollo's useLazyQuery.
 	// Seems like providing a function is the best way for something like login.
 	const [execute, setExecute] = React.useState<boolean>(false);
 
-	// Data for login
 	const [username, setUsername] = React.useState<string | null>(null);
 	const [password, setPassword] = React.useState<string | null>(null);
 	const [client_id, setClientId] = React.useState<string | null>(null);
@@ -53,8 +64,10 @@ export const useLazyLogin = () => {
 					formData.append('password', password);
 
 					const response = await fetch(`${url}oauth/token`, {
-						method: RequestMethod.Post,
-						headers: getHeaders(),
+						method: 'post',
+						headers: new Headers({
+							Accept: 'application/json',
+						}),
 						body: formData,
 					});
 					const parsedResponse = await response.json();
@@ -70,7 +83,6 @@ export const useLazyLogin = () => {
 						});
 						setData(parsedResponse);
 					} else {
-						localStorage.clear();
 						setError(parsedResponse);
 					}
 					setUsername(null);
