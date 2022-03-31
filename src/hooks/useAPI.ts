@@ -12,6 +12,7 @@ export interface Params {
 
 /**
  * Ignore _execute. It is used for lazyAPI.
+ * Add ?_format=hal_json or &_format=hal_json to the endpoint if it is required. Otherwise, _format=json will be added automatically.
  * @example
  * const { data, loading, error } = useAPI({ endpoint, method, body });
  */
@@ -36,9 +37,12 @@ export const useAPI = ({ body = {}, method = 'GET', endpoint = '', _execute = tr
 					});
 				}
 
-				// Deal with jsonAPI / user input / query strings. Ugly but works.
+				// Deal with jsonAPI / user input / query strings.
+				// If hal_json is required for some requests, users should just enter it
 				const query =
-					endpoint.startsWith('jsonapi') || endpoint.includes('_format=json')
+					endpoint.startsWith('jsonapi') ||
+					endpoint.includes('_format=json') ||
+					endpoint.includes('_format=hal_json')
 						? `${url}${endpoint}`
 						: endpoint.includes('?')
 						? `${url}${endpoint}&_format=json`

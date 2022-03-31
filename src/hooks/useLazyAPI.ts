@@ -3,6 +3,7 @@ import { useAPI } from './useAPI';
 import { Params } from './useAPI';
 
 /**
+ * Add ?_format=hal_json or &_format=hal_json to the endpoint if it is required. Otherwise, _format=json will be added automatically.
  * @example
  * const [lazyAPI, { loading, error, data }] = useLazyAPI();
  *
