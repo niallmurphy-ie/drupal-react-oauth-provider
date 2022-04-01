@@ -11,7 +11,15 @@ import { Params } from './useAPI';
  *
  */
 
-export const useLazyAPI = () => {
+interface LazyAPI {
+	loading: boolean;
+	error: any;
+	data: any;
+}
+// LazyAPI : { body, method, endpoint }: Params
+type UseLazyAPI = [(params: Params) => void, LazyAPI];
+
+export const useLazyAPI = (): UseLazyAPI => {
 	const [exectute, setExecute] = React.useState<boolean>(false);
 	const [_body, setBody] = React.useState<object>({});
 	const [_method, setMethod] = React.useState<'GET' | 'POST' | 'PATCH' | 'DELETE'>('GET');
@@ -30,8 +38,8 @@ export const useLazyAPI = () => {
 
 	// Set execute to true so that the API can be used.
 	const lazyAPI = ({ body, method, endpoint }: Params) => {
-		setBody(body);
-		setMethod(method);
+		body && setBody(body);
+		method && setMethod(method);
 		setEndpoint(endpoint);
 		setExecute(true);
 	};

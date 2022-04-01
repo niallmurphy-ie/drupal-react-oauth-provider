@@ -8,6 +8,13 @@ interface Login {
 	grant_type: string;
 	scope: string;
 }
+interface LazyLogin {
+	loading: boolean;
+	error: any;
+	data: any;
+}
+// UseLazyLogin : { body, method, endpoint }: Params
+type UseLazyLogin = [(params: Login) => void, LazyLogin];
 
 /**
  * The oauth settings get saved to localStorage so refresh tokens work. Doing it this way means you can easily have multiple oauth clients in one app.
@@ -22,7 +29,7 @@ interface Login {
  * 	scope: 'scope',
  * });
  */
-export const useLazyLogin = () => {
+export const useLazyLogin = (): UseLazyLogin => {
 	const { url, handleSetToken, isAuthenticated, storeOauthSettings } = React.useContext(DrupalContext);
 
 	// Lazy functionality through execute like Apollo's useLazyQuery.
@@ -43,9 +50,8 @@ export const useLazyLogin = () => {
 	React.useEffect(() => {
 		async function loadData() {
 			try {
-
 				// Typescript checks
-				if (!url || !handleSetToken || !storeOauthSettings ) return;
+				if (!url || !handleSetToken || !storeOauthSettings) return;
 
 				if (
 					execute &&

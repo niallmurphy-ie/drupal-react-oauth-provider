@@ -6,8 +6,16 @@ import { DrupalContext } from '../../context';
  * const { addHeaders } = useHeaders();
  * addHeaders('Hello', 'World');
  */
-export const useHeaders = () => {
+
+interface UseHeaders {
+	addHeaders: (key: string, value: string) => void;
+	removeHeaders: (key: string) => void;
+}
+
+// #toDo -
+export const useHeaders = (): UseHeaders => {
 	const { addHeaders, removeHeaders } = React.useContext(DrupalContext);
+	if (!addHeaders || !removeHeaders) return {} as UseHeaders; // This is safe as these functions always exist? #toDo - Check this
 	return {
 		addHeaders,
 		removeHeaders,

@@ -4,9 +4,9 @@ import { refreshToken } from '../util/refreshToken';
 
 // Hide _execute
 export type Params = {
-	readonly method: 'GET' | 'POST' | 'PATCH' | 'DELETE';
 	readonly endpoint: string;
-	readonly body: object;
+	readonly method?: 'GET' | 'POST' | 'PATCH' | 'DELETE';
+	readonly body?: object;
 	_execute?: boolean;
 };
 
@@ -20,11 +20,11 @@ export type Params = {
 export const useAPI = ({ body = {}, method = 'GET', endpoint = '', _execute = true }: Params) => {
 	const { getHeaders, url, token, handleSetToken } = React.useContext(DrupalContext);
 
-	
+
 	const [loading, setLoading] = React.useState<boolean>(false);
 	const [error, setError] = React.useState<object | null>(null);
 	const [data, setData] = React.useState<object | object[] | null>(null);
-	
+
 	React.useEffect(() => {
 		async function loadData() {
 			if (_execute) {
@@ -32,7 +32,7 @@ export const useAPI = ({ body = {}, method = 'GET', endpoint = '', _execute = tr
 
 				// Typescript checks
 				if (!getHeaders || !url || !token || !handleSetToken ) return
-				
+
 				// Check access token expiry time and renew it before making request.
 				if (token !== null && token.expirationDate < Math.floor(Date.now() / 1000)) {
 					// Must call this async so that the token is set before making the request.
