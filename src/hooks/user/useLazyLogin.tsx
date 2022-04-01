@@ -1,5 +1,6 @@
 import React from 'react';
 import { DrupalContext } from '../../context';
+import { Data, Error, Loading } from '../../returnTypes';
 interface Login {
 	username: string;
 	password: string;
@@ -9,11 +10,10 @@ interface Login {
 	scope: string;
 }
 interface LazyLogin {
-	loading: boolean;
-	error: any;
-	data: any;
+	loading: Loading;
+	error: Error;
+	data: Data;
 }
-// UseLazyLogin : { body, method, endpoint }: Params
 type UseLazyLogin = [(params: Login) => void, LazyLogin];
 
 /**
@@ -43,9 +43,9 @@ export const useLazyLogin = (): UseLazyLogin => {
 	const [_grantType, setGrantType] = React.useState<string | null>(null);
 	const [_scope, setScope] = React.useState<string | null>(null);
 
-	const [loading, setLoading] = React.useState<boolean>(false);
-	const [error, setError] = React.useState<object | null>(null);
-	const [data, setData] = React.useState<object | null>(null);
+	const [loading, setLoading] = React.useState<Loading>(false);
+	const [error, setError] = React.useState<Error>(null);
+	const [data, setData] = React.useState<Data>(null);
 
 	React.useEffect(() => {
 		async function loadData() {
@@ -112,7 +112,7 @@ export const useLazyLogin = (): UseLazyLogin => {
 				setGrantType(null);
 				setScope(null);
 				setLoading(false);
-				setError(error as object);
+				setError(error as Error);
 				setExecute(false);
 			}
 		}

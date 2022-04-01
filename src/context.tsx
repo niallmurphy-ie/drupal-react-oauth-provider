@@ -93,7 +93,6 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 
 	// Refresh token if it is expired when app is opened.
 	React.useEffect(() => {
-		console.log('tokenInUseEffect :>> ', token);
 		if (!token || _isAuthenticated) return;
 		if (token.expirationDate > Math.floor(Date.now() / 1000)) {
 			addHeaders('Authorization', `${token.token_type} ${token.access_token}`);
@@ -102,7 +101,6 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 		}
 		if (token.expirationDate < Math.floor(Date.now() / 1000)) {
 			// Ok to call this non async as the state will update
-			console.log('1');
 			refreshToken({
 				handleSetToken,
 			});

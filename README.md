@@ -24,17 +24,7 @@
 
 Taking inspiration from [Apollo GraphQL's](https://www.apollographql.com/docs/react/data/queries#manual-execution-with-uselazyquery) `useLazyQuery`, the hooks provided can be triggered at any time, instead of when the React component is rendered.
 
-# Drupal Installation
 
-#### Requirements
-
--   Oauth2 (Tested with [Simple OAuth (OAuth2) & OpenID Connect](https://www.drupal.org/project/simple_oauth/))
--   Drupal 8+
-
-#### Recommended
-
--   Enable REST / RESTUI / JSON:API / Views etc.
--   Create a "me" user View with `Contextual Filter: User ID: User ID from logged in user` to get user roles etc. Access it with `useAPI` or `useLazyAPI`
 
 # How does it work?
 
@@ -63,13 +53,13 @@ import { useLazyLogin } from 'drupal-react-oauth-provider';
 const [login, { loading, error, data }] = useLazyLogin();
 ...
     onClick={() =>
-    	login({
-    		username,
-    		password,
-    		client_id,
-    		client_secret,
-    		grant_type,
-    		scope,
+    	login({ // examples below
+    		username, // 'user1',
+    		password, // '123456',
+    		client_id, // '5e6c8415-9a1f-4d8b-9249-72b9dc6f7494',
+    		client_secret, // 'client_secret_simple_oauth',
+    		grant_type, // 'password',
+    		scope, // 'consumer' < Some Drupal role that's set in oauth
     	})
     }
 ```
@@ -114,6 +104,20 @@ const [logout] = useLazyLogout();
 <button onClick={() => logout()}>Logout</button>
 ```
 
+# Drupal Installation
+
+#### Requirements
+
+-   Oauth2 (Tested with [Simple OAuth (OAuth2) & OpenID Connect](https://www.drupal.org/project/simple_oauth/))
+-	 An oauth client created in Drupal with ID / scope etc.
+-   Drupal 8+
+
+#### Recommended
+
+-   Enable REST / RESTUI / JSON:API / Views etc.
+-   Create a "me" user View with `Contextual Filter: User ID: User ID from logged in user` to get user roles etc. Access it with `useAPI` or `useLazyAPI`
+
+#
 ## Note
 
 There is a problem with Jest tests. They require `react` and `react-dom` as devDependencies, but this breaks production. And help writing more comprehensive tests would be welcome. Unit testing the lazy functions is difficult so I think E2E testing with Cyrpus would work better. I've seen some people say that testing Apollo's lazy queries is difficult.

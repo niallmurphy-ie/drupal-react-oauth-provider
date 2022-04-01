@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAPI } from './useAPI';
 import { Params } from './useAPI';
-
+import { Loading, Error, Data } from '../returnTypes';
 /**
  * method: 'GET' | 'POST' | 'PATCH' | 'DELETE'
  *
@@ -12,11 +12,10 @@ import { Params } from './useAPI';
  */
 
 interface LazyAPI {
-	loading: boolean;
-	error: any;
-	data: any;
+	loading: Loading;
+	error: Error;
+	data: Data;
 }
-// LazyAPI : { body, method, endpoint }: Params
 type UseLazyAPI = [(params: Params) => void, LazyAPI];
 
 export const useLazyAPI = (): UseLazyAPI => {

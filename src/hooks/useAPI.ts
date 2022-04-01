@@ -1,6 +1,7 @@
 import React from 'react';
 import { DrupalContext } from '../context';
 import { refreshToken } from '../util/refreshToken';
+import { Error, Data, Loading } from '../returnTypes';
 
 // Hide _execute
 export type Params = {
@@ -20,9 +21,9 @@ export type Params = {
 export const useAPI = ({ body = {}, method = 'GET', endpoint = '', _execute = true }: Params) => {
 	const { addHeaders, getHeaders, url, token, handleSetToken } = React.useContext(DrupalContext);
 
-	const [loading, setLoading] = React.useState<boolean>(false);
-	const [error, setError] = React.useState<object | null>(null);
-	const [data, setData] = React.useState<object | object[] | null>(null);
+	const [loading, setLoading] = React.useState<Loading>(false);
+	const [error, setError] = React.useState<Error>(null);
+	const [data, setData] = React.useState<Data>(null);
 
 	React.useEffect(() => {
 		async function loadData() {
