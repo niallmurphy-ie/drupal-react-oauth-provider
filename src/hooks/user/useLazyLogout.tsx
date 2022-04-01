@@ -7,6 +7,10 @@ export const useLazyLogout = () => {
 
 	React.useEffect(() => {
 		async function loadData() {
+
+			// Typescript checks
+			if (!logoutUser) return;
+			
 			try {
 				if (execute) {
 					logoutUser();

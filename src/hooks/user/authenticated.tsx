@@ -7,5 +7,9 @@ import { DrupalContext } from '../../context';
  */
 export const authenticated = (): boolean => {
 	const { isAuthenticated } = React.useContext(DrupalContext);
+
+	// Typescript checks
+	if (!isAuthenticated) return false;
+	
 	return isAuthenticated;
 };

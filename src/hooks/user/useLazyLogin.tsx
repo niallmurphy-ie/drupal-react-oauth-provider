@@ -43,6 +43,10 @@ export const useLazyLogin = () => {
 	React.useEffect(() => {
 		async function loadData() {
 			try {
+
+				// Typescript checks
+				if (!url || !handleSetToken || !storeOauthSettings ) return;
+
 				if (
 					execute &&
 					_username &&

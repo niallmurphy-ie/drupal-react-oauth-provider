@@ -20,14 +20,14 @@ export interface OauthSettings {
 
 interface ProviderConfig {
 	url: string;
-	token: Token | null;
-	handleSetToken: (token: Token) => void;
-	isAuthenticated: boolean;
-	getHeaders: () => Headers;
-	addHeaders: (key: string, value: string) => void;
-	removeHeaders: (key: string) => void;
-	storeOauthSettings: (settings: OauthSettings) => void;
-	logoutUser: () => void;
+	token?: Token | null;
+	handleSetToken?: (token: Token) => void;
+	isAuthenticated?: boolean;
+	getHeaders?: () => Headers;
+	addHeaders?: (key: string, value: string) => void;
+	removeHeaders?: (key: string) => void;
+	storeOauthSettings?: (settings: OauthSettings) => void;
+	logoutUser?: () => void;
 }
 
 interface ProviderProps {
@@ -36,15 +36,7 @@ interface ProviderProps {
 }
 
 export const DrupalContext = React.createContext<ProviderConfig>({
-	url: '',
-	token: null,
-	isAuthenticated: false,
-	getHeaders: () => new Headers(),
-	addHeaders: () => undefined,
-	removeHeaders: () => undefined,
-	handleSetToken: () => undefined,
-	storeOauthSettings: () => undefined,
-	logoutUser: () => undefined,
+	url: ''
 });
 
 export const DrupalProvider = ({ children, config }: ProviderProps) => {
