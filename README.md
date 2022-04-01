@@ -77,9 +77,9 @@ const [login, { loading, error, data }] = useLazyLogin();
 ### Check authentication status with `authenticated`
 
 ```javascript
-import { authenticated } from 'drupal-react-oauth-provider';
+import { isAuthenticated } from 'drupal-react-oauth-provider';
 ...
-{authenticated() ? 'You are authenticated': 'You are not authenticated'}
+{isAuthenticated() ? 'You are authenticated': 'You are not authenticated'}
 ```
 
 ### Make queries with `useAPI` or `useLazyAPI`

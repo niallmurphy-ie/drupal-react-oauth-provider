@@ -38,8 +38,8 @@ export const useLazyAPI = (): UseLazyAPI => {
 
 	// Set execute to true so that the API can be used.
 	const lazyAPI = ({ body, method, endpoint }: Params) => {
-		body && setBody(body);
-		method && setMethod(method);
+		if (body) setBody(body);
+		if (method) setMethod(method);
 		setEndpoint(endpoint);
 		setExecute(true);
 	};

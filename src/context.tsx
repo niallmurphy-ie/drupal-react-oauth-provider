@@ -23,7 +23,7 @@ interface ProviderConfig {
 	url: string;
 	token?: Token | null;
 	handleSetToken?: (token: Token) => void;
-	isAuthenticated?: boolean;
+	_isAuthenticated?: boolean;
 	getHeaders?: () => Headers;
 	addHeaders?: (key: string, value: string) => void;
 	removeHeaders?: (key: string) => void;
@@ -47,7 +47,7 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 	const [token, setToken] = React.useState<Token | null>(
 		localStorage.getItem('token') !== null ? JSON.parse(localStorage.getItem('token') as string) : null,
 	);
-	const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
+	const [_isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
 
 	/**
 	 * This function will add headers for useAPI(), useLazyAPI().
@@ -93,7 +93,7 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 
 	// Refresh token if it is expired when app is opened.
 	React.useEffect(() => {
-		if (!token || isAuthenticated) return;
+		if (!token || _isAuthenticated) return;
 		if (token.expirationDate > Math.floor(Date.now() / 1000)) {
 			setIsAuthenticated(true);
 			addHeaders('Authorization', `${token.token_type} ${token.access_token}`);
@@ -112,7 +112,7 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 				...config, // includes url
 				token,
 				handleSetToken,
-				isAuthenticated,
+				_isAuthenticated,
 				storeOauthSettings,
 				getHeaders,
 				addHeaders,

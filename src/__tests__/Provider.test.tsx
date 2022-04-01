@@ -17,7 +17,7 @@ const config = {
 	scope: 'consumer',
 	token: null,
 	handleSetToken: () => {},
-	isAuthenticated: false,
+	_isAuthenticated: false,
 	setIsAuthenticated: () => {},
 	getHeaders: () => new Headers({ Accept: 'application/json' }),
 	addHeaders: () => {},
@@ -51,22 +51,7 @@ describe('DrupalContext', () => {
 	});
 });
 
-// Test setIsAuthenticated and isAuthenticated inside DrupalProvider
 describe('DrupalProvider', () => {
-	it('setIsAuthenticated should set isAuthenticated to true', () => {
-		render(
-			<DrupalProvider config={config}>
-				<DrupalContext.Consumer>
-					{(context) => {
-						context.setIsAuthenticated(true);
-						return <div>{context.isAuthenticated ? 'true' : 'false'}</div>;
-					}}
-				</DrupalContext.Consumer>
-			</DrupalProvider>,
-		);
-		// Expect context.isAuthenticated to be true
-		expect(screen.getByText('true')).toBeInTheDocument();
-	});
 	it('addHeaders should add a header to the Headers object', () => {
 		render(
 			<DrupalProvider config={config}>

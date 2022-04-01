@@ -30,7 +30,7 @@ type UseLazyLogin = [(params: Login) => void, LazyLogin];
  * });
  */
 export const useLazyLogin = (): UseLazyLogin => {
-	const { url, handleSetToken, isAuthenticated, storeOauthSettings } = React.useContext(DrupalContext);
+	const { url, handleSetToken, _isAuthenticated, storeOauthSettings } = React.useContext(DrupalContext);
 
 	// Lazy functionality through execute like Apollo's useLazyQuery.
 	// Seems like providing a function is the best way for something like login.
@@ -61,7 +61,7 @@ export const useLazyLogin = (): UseLazyLogin => {
 					_clientID &&
 					_clientSecret &&
 					_scope &&
-					!isAuthenticated
+					!_isAuthenticated
 				) {
 					setLoading(true);
 
