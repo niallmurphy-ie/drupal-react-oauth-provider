@@ -24,8 +24,6 @@
 
 Taking inspiration from [Apollo GraphQL's](https://www.apollographql.com/docs/react/data/queries#manual-execution-with-uselazyquery) `useLazyQuery`, the hooks provided can be triggered at any time, instead of when the React component is rendered.
 
-
-
 # How does it work?
 
 ### Wrap your React app with DrupalProvider.
@@ -67,9 +65,10 @@ const [login, { loading, error, data }] = useLazyLogin();
 ### Check authentication status with `authenticated`
 
 ```javascript
-import { isAuthenticated } from 'drupal-react-oauth-provider';
+import { useAuthenticated } from 'drupal-react-oauth-provider';
 ...
-{isAuthenticated() ? 'You are authenticated': 'You are not authenticated'}
+const isAuthenticated = useAuthenticated();
+{isAuthenticated ? 'You are authenticated': 'You are not authenticated'}
 ```
 
 ### Make queries with `useAPI` or `useLazyAPI`
@@ -109,7 +108,7 @@ const [logout] = useLazyLogout();
 #### Requirements
 
 -   Oauth2 (Tested with [Simple OAuth (OAuth2) & OpenID Connect](https://www.drupal.org/project/simple_oauth/))
--	 An oauth client created in Drupal with ID / scope etc.
+-   An oauth client created in Drupal with ID / scope etc.
 -   Drupal 8+
 
 #### Recommended
@@ -118,6 +117,7 @@ const [logout] = useLazyLogout();
 -   Create a "me" user View with `Contextual Filter: User ID: User ID from logged in user` to get user roles etc. Access it with `useAPI` or `useLazyAPI`
 
 #
+
 ## Note
 
 There is a problem with Jest tests. They require `react` and `react-dom` as devDependencies, but this breaks production. And help writing more comprehensive tests would be welcome. Unit testing the lazy functions is difficult so I think E2E testing with Cyrpus would work better. I've seen some people say that testing Apollo's lazy queries is difficult.
