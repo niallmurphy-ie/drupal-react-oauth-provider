@@ -1,7 +1,7 @@
 import React from 'react';
 import { DrupalContext } from '../../context';
 import { Data, Error, Loading } from '../../returnTypes';
-interface Login {
+type Login = {
 	username: string;
 	password: string;
 	client_id: string;
