@@ -14,11 +14,12 @@
 
 -   Context Provider stores Oauth across app
 -   Abstract away all token management
--   Hooks such as `useAPI`, `useLazyAPI`, and `useLazyLogin` access REST / JSON:API / Views REST etc. with user credentials in the header
+- 	 Supports proxies to hide oauth client ID, secret etc. on frontend
+-   Hooks such as `useAPI`, `useLazyAPI`, `useLazyLogin`, and `useLazyLoginProxy` access REST / JSON:API / Views REST etc. with user credentials in the header
 -   GET, POST, PATCH, and DELETE supported
 -   `_format=json` added by default. `_format=hal_json` can be added manually
 
-#
+
 
 > Lazy?
 
@@ -43,7 +44,7 @@ ReactDOM.render(
 );
 ```
 
-### Log in users with `useLazyLogin`
+### Log in users with `useLazyLogin` or `useLazyLoginProxy`
 
 ```javascript
 import { useLazyLogin } from 'drupal-react-oauth-provider';
@@ -58,6 +59,22 @@ const [login, { loading, error, data }] = useLazyLogin();
     		client_secret, // 'client_secret_simple_oauth',
     		grant_type, // 'password',
     		scope, // 'consumer' < Some Drupal role that's set in oauth
+    	})
+    }
+```
+#### Create a proxy server that stores oauth settings.
+Any stack can be used as long as it return the JSON from Drupal. Proxy server should listen for `username` and `password` for login, and `refresh_token` for refreshing the access token. The proxy should have the fields in the example above.
+
+Example: https://github.com/niallmurphy-ie/drupal-react-oauth-provider-proxy-example/blob/master/index.js
+
+```javascript
+const [login, { loading, error, data }] = useLazyLoginProxy();
+...
+    onClick={() =>
+    	login({
+    		username, // 'user1',
+    		password, // '123456',
+    		proxyURL: 'https://myproxy.mysite.com/oauth',
     	})
     }
 ```

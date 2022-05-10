@@ -29,7 +29,7 @@ export const useAPI = ({ body = {}, method = 'GET', endpoint = '', _execute = tr
 		async function loadData() {
 			if (_execute) {
 				setLoading(true);
-
+				setError(null);
 				// Typescript checks
 				if (!addHeaders || !getHeaders || !url || !handleSetToken) return;
 
