@@ -20,7 +20,7 @@ export interface OauthSettings {
 
 // Everything here except url is optional. If not, it is required when instantiating DrupalProvider which is impossible.
 interface ProviderConfig {
-	url: string;
+	url?: string;
 	token?: Token | null;
 	handleSetToken?: (token: Token) => void;
 	_isAuthenticated?: boolean;
@@ -36,9 +36,7 @@ interface ProviderProps {
 	config: ProviderConfig;
 }
 
-export const DrupalContext = React.createContext<ProviderConfig>({
-	url: '',
-});
+export const DrupalContext = React.createContext<ProviderConfig>({});
 
 export const DrupalProvider = ({ children, config }: ProviderProps) => {
 	const [headers, setHeaders] = React.useState<Headers>(
