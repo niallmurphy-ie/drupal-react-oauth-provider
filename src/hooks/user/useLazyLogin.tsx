@@ -64,7 +64,7 @@ export const useLazyLogin = (): UseLazyLogin => {
 					!_isAuthenticated
 				) {
 					setLoading(true);
-
+					setError(null);
 					const formData = new URLSearchParams();
 					formData.append('grant_type', _grantType);
 					formData.append('client_id', _clientID);
