@@ -17,17 +17,20 @@ export interface OauthSettings {
 	_grantType: string;
 	_scope: string;
 }
+export interface OauthSettingsProxy {
+	proxyURL: string;
+}
 
 // Everything here except url is optional. If not, it is required when instantiating DrupalProvider which is impossible.
 interface ProviderConfig {
-	url?: string;
+	url: string;
 	token?: Token | null;
 	handleSetToken?: (token: Token) => void;
 	_isAuthenticated?: boolean;
 	getHeaders?: () => Headers;
 	addHeaders?: (key: string, value: string) => void;
 	removeHeaders?: (key: string) => void;
-	storeOauthSettings?: (settings: OauthSettings) => void;
+	storeOauthSettings?: (settings: OauthSettings | OauthSettingsProxy) => void;
 	logoutUser?: () => void;
 }
 
@@ -36,7 +39,9 @@ interface ProviderProps {
 	config: ProviderConfig;
 }
 
-export const DrupalContext = React.createContext<ProviderConfig>({});
+export const DrupalContext = React.createContext<ProviderConfig>({
+	url: '',
+});
 
 export const DrupalProvider = ({ children, config }: ProviderProps) => {
 	const [headers, setHeaders] = React.useState<Headers>(
@@ -85,7 +90,7 @@ export const DrupalProvider = ({ children, config }: ProviderProps) => {
 		removeHeaders('Content-Type');
 	};
 	// Store oauth settings in localStorage
-	const storeOauthSettings = (oauthSettings: OauthSettings) => {
+	const storeOauthSettings = (oauthSettings: OauthSettings | OauthSettingsProxy) => {
 		localStorage.setItem('oauthSettings', JSON.stringify(oauthSettings));
 	};
 
